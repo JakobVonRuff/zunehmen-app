@@ -1,13 +1,52 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFB340"/>
-      <stop offset="1" stop-color="#FF7A00"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2B1240"/>
+      <stop offset=".55" stop-color="#140A1F"/>
+      <stop offset="1" stop-color="#08060C"/>
     </linearGradient>
+    <radialGradient id="glowA" cx="0.18" cy="0.85" r="0.6">
+      <stop offset="0" stop-color="#FF7A1A" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#FF7A1A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0.9" cy="0.12" r="0.55">
+      <stop offset="0" stop-color="#FF2D6F" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#FF2D6F" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="arc" gradientUnits="userSpaceOnUse" x1="260" y1="760" x2="800" y2="380">
+      <stop offset="0" stop-color="#FFC24B"/>
+      <stop offset=".5" stop-color="#FF7A1A"/>
+      <stop offset="1" stop-color="#FF2D6F"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity=".14"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="34"/></filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
   </defs>
-  <rect width="1024" height="1024" fill="url(#g)"/>
-  <circle cx="512" cy="512" r="300" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="88"/>
-  <path d="M512 212 A300 300 0 1 1 212 512" fill="none" stroke="#FFFFFF" stroke-width="88" stroke-linecap="round"/>
-  <rect x="472" y="392" width="80" height="240" rx="40" fill="#FFFFFF"/>
-  <rect x="392" y="472" width="240" height="80" rx="40" fill="#FFFFFF"/>
+
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <rect width="1024" height="1024" fill="url(#glowA)"/>
+  <rect width="1024" height="1024" fill="url(#glowB)"/>
+
+  <!-- Spur des Rings -->
+  <path d="M299.9 742.1 A300 300 0 1 1 724.1 742.1" fill="none" stroke="#FFFFFF" stroke-opacity=".09" stroke-width="96" stroke-linecap="round"/>
+  <!-- Leuchten unter dem Fortschritt -->
+  <path d="M299.9 742.1 A300 300 0 1 1 783.9 403.2" fill="none" stroke="url(#arc)" stroke-width="120" stroke-linecap="round" opacity=".75" filter="url(#blur)"/>
+  <!-- Fortschritt -->
+  <path d="M299.9 742.1 A300 300 0 1 1 783.9 403.2" fill="none" stroke="url(#arc)" stroke-width="96" stroke-linecap="round"/>
+  <!-- Lichtkante auf dem Ring -->
+  <path d="M230.1 632.6 A300 300 0 0 1 409.4 248.1" fill="none" stroke="#FFFFFF" stroke-opacity=".32" stroke-width="16" stroke-linecap="round" transform="translate(-18 -6)"/>
+  <!-- Endpunkt -->
+  <circle cx="783.9" cy="403.2" r="30" fill="#FFFFFF" opacity=".95"/>
+
+  <!-- Pfeil nach oben -->
+  <g filter="url(#soft)" opacity=".5">
+    <path d="M512 650 V420 M422 508 L512 418 L602 508" fill="none" stroke="#FF7A1A" stroke-width="78" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <path d="M512 650 V420 M422 508 L512 418 L602 508" fill="none" stroke="#FFFFFF" stroke-width="72" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Glanz oben -->
+  <ellipse cx="512" cy="-60" rx="760" ry="360" fill="url(#gloss)" opacity=".7"/>
 </svg>

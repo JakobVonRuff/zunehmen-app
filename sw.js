@@ -1,6 +1,6 @@
 // Offline-Modus: speichert die App beim ersten Öffnen. Bei Änderungen VERSION erhöhen.
-const VERSION = "zunehmen-v5";
-const FILES = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png"];
+const VERSION = "zunehmen-v6";
+const FILES = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png", "plan.json", "widget.js"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

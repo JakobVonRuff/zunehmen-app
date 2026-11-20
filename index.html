@@ -7,262 +7,341 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Zunehmen">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#07070A">
 <meta name="description" content="Täglicher Essensplan zum gesunden Zunehmen mit Abhak-Liste.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>
-/* iOS-Look, organisch: Nährwert-Kopf mit Bogen und Balken, Zeitstrahl mit Karten, Abhaken mit Pop und Konfetti */
+/* Premium-Dunkel: Polarlicht im Hintergrund, Glas-Karten, Ringe, schwebende Tab-Leiste */
 :root{
-  --bg:#F2F2F7; --card:#FFFFFF; --label:#000; --label2:rgba(60,60,67,.6); --label3:rgba(60,60,67,.3);
-  --sep:rgba(60,60,67,.18); --fill:rgba(120,120,128,.12); --seg:#FFFFFF;
-  --orange:#FF9500; --pink:#FF2D55; --green:#34C759; --blue:#007AFF;
-  --carb:#FFB020; --prot:#FF4F7B; --fat:#32ADE6;
-  --bar:rgba(249,249,249,.82); --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);
-  --blobA:rgba(255,149,0,.22); --blobB:rgba(255,45,85,.16); --blobC:rgba(50,173,230,.14);
+  --bg:#07070A; --glass:rgba(255,255,255,.055); --glass2:rgba(255,255,255,.1); --stroke:rgba(255,255,255,.085);
+  --text:#F5F5F7; --text2:rgba(235,235,245,.62); --text3:rgba(235,235,245,.32);
+  --amber:#FFC24B; --orange:#FF8A1F; --pink:#FF2D6F; --violet:#8B5CF6; --green:#30D158; --teal:#2DD4BF;
+  --carb:#FFC24B; --prot:#FF4F7B; --fat:#3BC9F5;
+  --grad:linear-gradient(135deg,#FFC24B,#FF8A1F 45%,#FF2D6F);
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
   --round:ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-  color-scheme:light;
+  --spring:cubic-bezier(.2,1.5,.35,1); --ease:cubic-bezier(.2,.8,.2,1);
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root{
-  --bg:#000; --card:#1C1C1E; --label:#FFF; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3);
-  --sep:rgba(84,84,88,.5); --fill:rgba(120,120,128,.24); --seg:#636366;
-  --orange:#FF9F0A; --pink:#FF375F; --green:#30D158; --blue:#0A84FF;
-  --carb:#FFB340; --prot:#FF5C85; --fat:#40C8F4;
-  --bar:rgba(22,22,24,.82); --shadow:0 1px 2px rgba(0,0,0,.4);
-  --blobA:rgba(255,159,10,.28); --blobB:rgba(255,55,95,.22); --blobC:rgba(64,200,244,.16); color-scheme:dark}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--label);font-family:var(--font);font-size:17px;line-height:1.3;-webkit-text-size-adjust:100%}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:17px;line-height:1.3;-webkit-text-size-adjust:100%}
 body{padding-top:env(safe-area-inset-top,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);
-  padding-bottom:calc(90px + env(safe-area-inset-bottom,0px))}
-main{max-width:600px;margin:0 auto;padding:0 16px}
-.view[hidden]{display:none!important}
-.view{animation:viewIn .35s cubic-bezier(.2,.8,.2,1)}
-@keyframes viewIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.nav{display:flex;justify-content:flex-end;min-height:44px;align-items:center}
-.nav button{font:inherit;color:var(--blue);background:none;border:0;padding:8px 0;cursor:pointer}
-h1{font-size:34px;font-weight:700;letter-spacing:.01em;margin:2px 0 2px}
-.date{color:var(--label2);font-size:15px;margin:0 0 14px}
-.sechead{color:var(--label2);font-size:13px;text-transform:uppercase;letter-spacing:.03em;margin:24px 16px 8px}
-.secfoot{color:var(--label2);font-size:13px;margin:8px 16px 0;line-height:1.35}
+  padding-bottom:calc(110px + env(safe-area-inset-bottom,0px));min-height:100vh;overflow-x:hidden}
+main{max-width:560px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
 
-/* Nährwert-Kopf */
-.hero{position:relative;overflow:hidden;background:var(--card);border-radius:24px;padding:18px 16px 18px;box-shadow:var(--shadow);isolation:isolate}
-.blob{position:absolute;border-radius:50%;filter:blur(30px);z-index:-1;animation:float 14s ease-in-out infinite alternate}
-.blob.a{width:220px;height:220px;background:var(--blobA);top:-80px;left:-60px}
-.blob.b{width:200px;height:200px;background:var(--blobB);top:-40px;right:-70px;animation-duration:17s;animation-delay:-5s}
-.blob.c{width:180px;height:180px;background:var(--blobC);bottom:-90px;left:30%;animation-duration:19s;animation-delay:-9s}
-@keyframes float{0%{transform:translate(0,0) scale(1)}50%{transform:translate(24px,18px) scale(1.12)}100%{transform:translate(-18px,10px) scale(.94)}}
-.kcalrow{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
-.side{text-align:center}
-.side b{display:block;font-family:var(--round);font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
-.side span{color:var(--label2);font-size:13px}
-.gauge{position:relative;width:168px;height:168px}
-.gauge svg{width:100%;height:100%;overflow:visible}
-.gauge .track{fill:none;stroke:var(--fill);stroke-width:13;stroke-linecap:round}
-.gauge .prog{fill:none;stroke:url(#gk);stroke-width:13;stroke-linecap:round;transition:stroke-dasharray .9s cubic-bezier(.2,.9,.25,1.15);filter:drop-shadow(0 4px 8px rgba(255,120,40,.35))}
-.gauge .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:6px}
-.gauge .mid b{font-family:var(--round);font-size:38px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums;line-height:1}
-.gauge .mid span{color:var(--label2);font-size:13px;margin-top:4px}
-.macros{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px}
-.mac small{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
-.mac .bar{height:7px;border-radius:4px;background:var(--fill);overflow:hidden}
-.mac .bar i{display:block;height:100%;width:0;border-radius:4px;transition:width .9s cubic-bezier(.2,.9,.25,1.15)}
-.mac span{display:block;color:var(--label2);font-size:13px;margin-top:6px;font-variant-numeric:tabular-nums}
-.mac.c i{background:var(--carb)} .mac.p i{background:var(--prot)} .mac.f i{background:var(--fat)}
-.done-banner{display:none;margin-top:14px;text-align:center;font-weight:600;color:var(--green)}
-.hero.complete .done-banner{display:block;animation:pop .5s cubic-bezier(.2,1.6,.4,1)}
+/* Polarlicht */
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;animation:drift 22s ease-in-out infinite alternate}
+.aurora i:nth-child(1){width:70vw;height:70vw;max-width:520px;max-height:520px;background:#FF7A1A;top:-22vw;left:-24vw;opacity:.32}
+.aurora i:nth-child(2){width:60vw;height:60vw;max-width:460px;max-height:460px;background:#FF2D6F;top:8vh;right:-28vw;opacity:.24;animation-duration:27s;animation-delay:-8s}
+.aurora i:nth-child(3){width:80vw;height:80vw;max-width:560px;max-height:560px;background:#6D28D9;bottom:-30vw;left:10vw;opacity:.22;animation-duration:31s;animation-delay:-14s}
+@keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(6vw,4vh) scale(1.15)}100%{transform:translate(-5vw,2vh) scale(.92)}}
+.grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.05;background-image:radial-gradient(rgba(255,255,255,.9) .5px,transparent .6px);background-size:3px 3px}
+
+/* kompakte Kopfleiste beim Scrollen */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:20;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 10px;text-align:center;font-weight:600;font-size:17px;
+  background:rgba(10,10,14,.62);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border-bottom:.5px solid var(--stroke);
+  transform:translateY(-100%);opacity:0;transition:transform .35s var(--ease),opacity .35s}
+.topbar.on{transform:none;opacity:1}
+
+.view[hidden]{display:none!important}
+.view{animation:viewIn .45s var(--ease)}
+@keyframes viewIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding-top:18px}
+.hello{color:var(--text2);font-size:15px;font-weight:500}
+h1{font-family:var(--round);font-size:36px;font-weight:800;letter-spacing:-.01em;margin:2px 0 0;line-height:1.05}
+.sub{color:var(--text2);font-size:15px;margin:6px 0 0}
+.streak{display:flex;align-items:center;gap:6px;flex:none;padding:8px 12px;border-radius:999px;background:var(--glass);border:1px solid var(--stroke);
+  font-family:var(--round);font-weight:700;font-size:15px;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.streak svg{width:18px;height:18px}
+.streak.hot{background:linear-gradient(135deg,rgba(255,138,31,.25),rgba(255,45,111,.25));border-color:rgba(255,138,31,.45)}
+.reset{font:inherit;font-size:15px;color:var(--text2);background:none;border:0;padding:6px 0;cursor:pointer}
+
+.glass{background:var(--glass);border:1px solid var(--stroke);border-radius:26px;backdrop-filter:blur(26px) saturate(150%);-webkit-backdrop-filter:blur(26px) saturate(150%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 20px 40px rgba(0,0,0,.35)}
+
+/* Wochenleiste */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:18px 0 0;padding:10px 6px}
+.day{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;color:var(--text3);font-weight:600}
+.day svg{width:36px;height:36px}
+.day .tr{fill:none;stroke:rgba(255,255,255,.1);stroke-width:4}
+.day .pr{fill:none;stroke:url(#gArc);stroke-width:4;stroke-linecap:round;transform:rotate(-90deg);transform-box:fill-box;transform-origin:center;transition:stroke-dasharray .8s var(--ease)}
+.day .num{font-family:var(--round);font-size:12px;font-weight:700;fill:var(--text2)}
+.day.today{color:var(--text)}
+.day.today .num{fill:var(--text)}
+.day.full .num{fill:#fff}
+.day.future{opacity:.45}
+
+/* Hauptkarte */
+.hero{margin-top:14px;padding:20px 18px 18px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:-1px;border-radius:26px;pointer-events:none;background:linear-gradient(140deg,rgba(255,194,75,.25),transparent 30%,transparent 70%,rgba(255,45,111,.22));
+  -webkit-mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);-webkit-mask-composite:xor;mask-composite:exclude;padding:1px}
+.ringwrap{position:relative;width:230px;height:230px;margin:0 auto}
+.ringwrap svg{width:100%;height:100%;overflow:visible}
+.rtrack{fill:none;stroke:rgba(255,255,255,.08);stroke-width:18;stroke-linecap:round}
+.rglow{fill:none;stroke:url(#gArc);stroke-width:22;stroke-linecap:round;filter:blur(10px);opacity:.55}
+.rprog{fill:none;stroke:url(#gArc);stroke-width:18;stroke-linecap:round}
+.rtip{fill:#fff;filter:drop-shadow(0 0 8px rgba(255,255,255,.8))}
+.rcenter{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:8px}
+.rcenter b{font-family:var(--round);font-size:50px;font-weight:800;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums;
+  background:linear-gradient(180deg,#fff,#FFD9B0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rcenter span{color:var(--text2);font-size:14px;margin-top:6px;font-weight:500}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:-6px}
+.stat{text-align:center}
+.stat b{display:block;font-family:var(--round);font-size:21px;font-weight:800;font-variant-numeric:tabular-nums}
+.stat span{color:var(--text2);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.macros{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:18px;padding-top:16px;border-top:1px solid var(--stroke)}
+.mac{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center}
+.mac .mr{position:relative;width:62px;height:62px}
+.mac svg{width:100%;height:100%;transform:rotate(-90deg)}
+.mac .t{fill:none;stroke:rgba(255,255,255,.08);stroke-width:7}
+.mac .p{fill:none;stroke-width:7;stroke-linecap:round;transition:stroke-dasharray .9s var(--spring)}
+.mac .v{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--round);font-weight:800;font-size:15px;font-variant-numeric:tabular-nums}
+.mac small{font-size:12px;font-weight:600;color:var(--text2)}
+.mac em{font-style:normal;font-size:12px;color:var(--text3);font-variant-numeric:tabular-nums}
+.mac.c .p{stroke:var(--carb);filter:drop-shadow(0 0 5px rgba(255,194,75,.5))}
+.mac.p .p{stroke:var(--prot);filter:drop-shadow(0 0 5px rgba(255,79,123,.5))}
+.mac.f .p{stroke:var(--fat);filter:drop-shadow(0 0 5px rgba(59,201,245,.5))}
+
+/* Als Nächstes */
+.next{margin-top:14px;padding:16px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden}
+.next::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 140% at 0% 0%,rgba(255,138,31,.22),transparent 60%);pointer-events:none}
+.next .tile{width:54px;height:54px;border-radius:17px}
+.next .tile svg{width:28px;height:28px}
+.nbody{flex:1;min-width:0;position:relative}
+.nlabel{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ntitle{font-family:var(--round);font-size:20px;font-weight:800;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nwhen{color:var(--text2);font-size:14px;margin-top:2px}
+.eat{position:relative;flex:none;font:inherit;font-weight:700;font-size:15px;color:#1A0A00;border:0;border-radius:999px;padding:12px 16px;cursor:pointer;
+  background:var(--grad);box-shadow:0 8px 22px rgba(255,100,40,.45),inset 0 1px 0 rgba(255,255,255,.4);transition:transform .25s var(--spring)}
+.eat:active{transform:scale(.92)}
+.next.alldone .eat{display:none}
 
 /* Zeitstrahl */
-.timeline{position:relative;display:flex;flex-direction:column;gap:12px}
-.timeline::before{content:"";position:absolute;left:21px;top:14px;bottom:14px;width:2px;border-radius:1px;background:linear-gradient(var(--orange),var(--pink) 60%,var(--fat));opacity:.35}
-.item{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start;animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-.tcol{display:flex;flex-direction:column;align-items:center;padding-top:16px;gap:6px}
-.dot{width:14px;height:14px;border-radius:50%;background:var(--card);border:3px solid var(--label3);transition:all .35s;position:relative;z-index:1}
-.item.done .dot{border-color:var(--orange);background:var(--orange)}
-.item.next .dot{border-color:var(--orange);box-shadow:0 0 0 0 rgba(255,149,0,.6);animation:pulse 1.8s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,149,0,.55)}70%{box-shadow:0 0 0 10px rgba(255,149,0,0)}100%{box-shadow:0 0 0 0 rgba(255,149,0,0)}}
-.tlabel{font-family:var(--round);font-size:12px;font-weight:700;color:var(--label2);font-variant-numeric:tabular-nums}
-.card{position:relative;background:var(--card);border-radius:18px;padding:13px 14px 13px 15px;box-shadow:var(--shadow);display:flex;gap:12px;cursor:pointer;user-select:none;
-  transition:transform .25s cubic-bezier(.2,.9,.3,1.3),opacity .35s,box-shadow .35s}
-.card:active{transform:scale(.975)}
-.item.next .card{box-shadow:var(--shadow),0 0 0 2px var(--orange)}
-.badge{display:none;position:absolute;top:-9px;right:14px;font-size:11px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:#fff;background:linear-gradient(90deg,var(--orange),var(--pink));border-radius:20px;padding:3px 9px}
-.item.next .badge{display:block}
-.cbody{flex:1;min-width:0}
-.ctitle{font-size:17px;font-weight:600;transition:color .3s}
-.cdetail{color:var(--label2);font-size:15px;margin-top:3px}
+.sechead{display:flex;justify-content:space-between;align-items:baseline;margin:26px 4px 10px}
+.sechead h2{font-family:var(--round);font-size:22px;font-weight:800;margin:0}
+.sechead span{color:var(--text2);font-size:14px}
+.list{display:flex;flex-direction:column;gap:10px;position:relative}
+.item{position:relative;padding:14px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;cursor:pointer;user-select:none;
+  transition:transform .3s var(--spring),opacity .4s,background .4s;animation:rise .55s var(--ease) both}
+.item:active{transform:scale(.975)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.tile{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;position:relative;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 8px 18px rgba(0,0,0,.35)}
+.tile svg{width:24px;height:24px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ibody{min-width:0}
+.itime{font-family:var(--round);font-size:13px;font-weight:800;color:var(--text2);font-variant-numeric:tabular-nums;display:flex;gap:8px;align-items:center}
+.itime .now{display:none;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#1A0A00;background:var(--grad);border-radius:999px;padding:2px 7px}
+.item.isnext .itime .now{display:inline-block}
+.ititle{font-size:17px;font-weight:650;margin-top:2px;transition:color .3s}
+.more{display:grid;grid-template-rows:1fr;transition:grid-template-rows .45s var(--ease),opacity .35s}
+.more>div{overflow:hidden;min-height:0}
+.idetail{color:var(--text2);font-size:15px;margin-top:3px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-.chip{font-size:12px;font-weight:600;border-radius:7px;padding:3px 7px;background:var(--fill);color:var(--label2);font-variant-numeric:tabular-nums}
+.chip{font-size:12px;font-weight:700;border-radius:8px;padding:3px 8px;background:rgba(255,255,255,.07);font-variant-numeric:tabular-nums}
 .chip.k{color:var(--orange)} .chip.c{color:var(--carb)} .chip.p{color:var(--prot)} .chip.f{color:var(--fat)}
-.yz{margin-top:8px;font-size:12px;color:var(--label2)}
-.yz b{font-weight:600}
-.item.done .card{opacity:.6}
-.item.done .ctitle{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--orange)}
-.chk{flex:none;align-self:center;width:36px;height:36px;border-radius:50%;border:2.5px solid var(--label3);display:grid;place-items:center;position:relative;transition:border-color .25s}
-.chk::before{content:"";position:absolute;inset:-2.5px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--pink));transform:scale(0);transition:transform .35s cubic-bezier(.2,1.6,.4,1)}
-.chk svg{position:relative;width:18px;height:18px;stroke:#fff;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .3s .12s ease-out}
+.yz{margin-top:8px;font-size:12px;color:var(--text3)} .yz b{color:var(--text2);font-weight:600}
+.seg{display:flex;background:rgba(255,255,255,.07);border-radius:11px;padding:3px;margin-top:10px;max-width:250px;position:relative}
+.seg .pill{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:8px;background:rgba(255,255,255,.16);box-shadow:0 3px 10px rgba(0,0,0,.3);transition:transform .4s var(--spring)}
+.seg button{position:relative;flex:1;font:inherit;font-size:13px;font-weight:600;color:var(--text2);background:none;border:0;padding:7px 4px;cursor:pointer;transition:color .3s}
+.seg button[aria-pressed="true"]{color:var(--text)}
+.item.done{opacity:.55}
+.item.done .more{grid-template-rows:0fr;opacity:0}
+.item.done .ititle{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:rgba(255,138,31,.8)}
+.item.isnext{background:rgba(255,255,255,.085);border-color:rgba(255,138,31,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 0 0 1px rgba(255,138,31,.25),0 18px 40px rgba(255,90,40,.18)}
+.chk{position:relative;width:34px;height:34px;border-radius:50%;border:2.5px solid var(--text3);display:grid;place-items:center;margin-top:6px}
+.chk::before{content:"";position:absolute;inset:-2.5px;border-radius:50%;background:var(--grad);transform:scale(0);transition:transform .45s var(--spring);box-shadow:0 0 18px rgba(255,100,40,.6)}
+.chk svg{position:relative;width:17px;height:17px;stroke:#fff;stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:22;stroke-dashoffset:22;transition:stroke-dashoffset .35s .15s ease-out}
 .item.done .chk{border-color:transparent}
 .item.done .chk::before{transform:scale(1)}
 .item.done .chk svg{stroke-dashoffset:0}
-.item.gym.done .chk::before{background:linear-gradient(135deg,var(--green),#00C7BE)}
-.item.gym.done .dot{border-color:var(--green);background:var(--green)}
-.item.just .card{animation:bump .45s cubic-bezier(.2,1.6,.4,1)}
-@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.035)}100%{transform:scale(1)}}
-@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
-.spark{position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:50%;pointer-events:none;animation:burst .7s cubic-bezier(.1,.7,.3,1) forwards}
-@keyframes burst{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(.2);opacity:0}}
-.seg{display:flex;background:var(--fill);border-radius:9px;padding:2px;margin-top:10px;max-width:260px;position:relative}
-.seg button{flex:1;font:inherit;font-size:13px;font-weight:500;color:var(--label);background:none;border:0;border-radius:7px;padding:6px 4px;cursor:pointer;transition:background .25s,box-shadow .25s}
-.seg button[aria-pressed="true"]{background:var(--seg);box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04);font-weight:600}
+.item.gym.done .chk::before{background:linear-gradient(135deg,#30D158,#2DD4BF);box-shadow:0 0 18px rgba(48,209,88,.6)}
+.item.just{animation:bump .55s var(--spring)}
+@keyframes bump{0%{transform:scale(1)}30%{transform:scale(1.04)}100%{transform:scale(1)}}
+.spark{position:absolute;left:50%;top:50%;width:7px;height:7px;border-radius:2px;pointer-events:none;animation:burst .8s cubic-bezier(.1,.7,.3,1) forwards}
+@keyframes burst{0%{transform:translate(-50%,-50%) rotate(0) scale(1);opacity:1}100%{transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) rotate(var(--r)) scale(.3);opacity:0}}
 
-/* Listen in den anderen Tabs */
-.group{background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
-.row{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;position:relative}
-.row + .row::before{content:"";position:absolute;top:0;left:16px;right:0;border-top:.5px solid var(--sep)}
+/* andere Tabs */
+.group{overflow:hidden;border-radius:22px}
+.row{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;position:relative}
+.row + .row::before{content:"";position:absolute;top:0;left:16px;right:0;border-top:1px solid var(--stroke)}
 .row.tap{cursor:pointer;user-select:none}
-.row.tap + .row.tap::before{left:52px}
-.row.tap:active{background:var(--fill)}
-.rchk{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--label3);margin-top:1px;display:grid;place-items:center;transition:all .2s}
-.rchk svg{width:14px;height:14px;opacity:0;stroke:#fff;stroke-width:3;fill:none}
-.row.on .rchk{background:var(--orange);border-color:var(--orange)}
-.row.on .rchk svg{opacity:1}
-.row.on .title{color:var(--label3);text-decoration:line-through}
+.row.tap:active{background:rgba(255,255,255,.05)}
+.rchk{flex:none;width:26px;height:26px;border-radius:50%;border:2px solid var(--text3);display:grid;place-items:center;position:relative;transition:border-color .2s}
+.rchk::before{content:"";position:absolute;inset:-2px;border-radius:50%;background:var(--grad);transform:scale(0);transition:transform .35s var(--spring)}
+.rchk svg{position:relative;width:14px;height:14px;stroke:#fff;stroke-width:3;fill:none;opacity:0;transition:opacity .2s .1s}
+.row.on .rchk{border-color:transparent} .row.on .rchk::before{transform:scale(1)} .row.on .rchk svg{opacity:1}
+.row.on .title{color:var(--text3);text-decoration:line-through}
 .rbody{flex:1;min-width:0}
 .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.title{font-size:17px}
-.detail{color:var(--label2);font-size:15px;margin-top:2px}
-.price{color:var(--label2);font-size:15px;white-space:nowrap}
-.step{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:600;display:grid;place-items:center;margin-top:1px}
-.ingr{margin:4px 0 0;padding-left:18px;color:var(--label2);font-size:15px}
-.note{color:var(--label2);font-size:13px;text-align:center;margin:28px 16px 8px}
+.title{font-size:17px;font-weight:600}
+.detail{color:var(--text2);font-size:15px;margin-top:3px}
+.price{color:var(--text2);font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.step{flex:none;width:26px;height:26px;border-radius:50%;background:var(--grad);color:#1A0A00;font-family:var(--round);font-size:14px;font-weight:800;display:grid;place-items:center}
+.ingr{margin:5px 0 0;padding-left:18px;color:var(--text2);font-size:15px}
+.label{color:var(--text2);font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin:24px 6px 8px}
+.foot{color:var(--text2);font-size:13px;margin:8px 6px 0;line-height:1.4}
+.btn{font:inherit;font-weight:700;font-size:15px;color:#1A0A00;background:var(--grad);border:0;border-radius:999px;padding:11px 18px;cursor:pointer;margin-top:10px;box-shadow:0 8px 22px rgba(255,100,40,.35)}
+.btn:active{transform:scale(.95)}
+.note{color:var(--text3);font-size:12px;text-align:center;margin:26px 16px 0}
 
-/* Tab-Leiste */
-.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--bar);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
-  border-top:.5px solid var(--sep);display:flex;justify-content:space-around;
-  padding:7px max(8px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 4px) max(8px,env(safe-area-inset-left,0px))}
-.tabbar button{flex:1;max-width:120px;font:inherit;font-size:10px;font-weight:500;color:#999;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:2px 0 6px;cursor:pointer;transition:color .2s}
-.tabbar svg{width:26px;height:26px;fill:currentColor;transition:transform .3s cubic-bezier(.2,1.6,.4,1)}
-.tabbar button[aria-selected="true"]{color:var(--orange)}
-.tabbar button[aria-selected="true"] svg{transform:scale(1.12)}
-button:focus-visible,.card:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* schwebende Tab-Leiste */
+.tabbar{position:fixed;z-index:30;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 10px);transform:translateX(-50%);width:min(420px,calc(100% - 32px));height:64px;
+  display:grid;grid-template-columns:repeat(4,1fr);padding:6px;border-radius:999px;
+  background:rgba(22,22,28,.6);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 16px 40px rgba(0,0,0,.55)}
+.tabpill{position:absolute;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/4);border-radius:999px;background:rgba(255,255,255,.12);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18);transition:transform .5s var(--spring)}
+.tabbar button{position:relative;font:inherit;font-size:10px;font-weight:600;color:var(--text2);background:none;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;transition:color .3s}
+.tabbar svg{width:24px;height:24px;fill:currentColor;transition:transform .4s var(--spring)}
+.tabbar button[aria-selected="true"]{color:#fff}
+.tabbar button[aria-selected="true"] svg{transform:scale(1.1);color:var(--orange)}
+.tabbar button[aria-selected="true"] svg{fill:url(#gTab)}
+
+#fx{position:fixed;inset:0;z-index:50;pointer-events:none}
+.toast{position:fixed;z-index:51;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translate(-50%,-30px) scale(.9);opacity:0;padding:14px 20px;border-radius:20px;
+  font-family:var(--round);font-weight:800;font-size:18px;text-align:center;pointer-events:none;
+  background:rgba(30,20,30,.75);border:1px solid rgba(255,138,31,.5);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transition:all .5s var(--spring)}
+.toast.on{transform:translate(-50%,0) scale(1);opacity:1}
+.toast span{display:block;font-family:var(--font);font-size:14px;font-weight:500;color:var(--text2);margin-top:2px}
+button:focus-visible,.item:focus-visible,.row:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs><linearGradient id="gk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB020"/><stop offset=".55" stop-color="#FF7A1A"/><stop offset="1" stop-color="#FF2D55"/></linearGradient></defs>
+  <defs>
+    <linearGradient id="gArc" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FFC24B"/><stop offset=".5" stop-color="#FF8A1F"/><stop offset="1" stop-color="#FF2D6F"/></linearGradient>
+    <linearGradient id="gTab" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC24B"/><stop offset="1" stop-color="#FF2D6F"/></linearGradient>
+  </defs>
 </svg>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="topbar" id="topbar">Heute</div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status">Tag geschafft!<span>Alle Mahlzeiten gegessen. Stark.</span></div>
+
 <main>
-
-<section class="view" id="v-heute">
-  <div class="nav"><button type="button" id="reset">Zurücksetzen</button></div>
-  <h1>Heute</h1>
-  <p class="date" id="date"></p>
-
-  <div class="hero" id="hero" aria-live="polite">
-    <div class="blob a"></div><div class="blob b"></div><div class="blob c"></div>
-    <div class="kcalrow">
-      <div class="side"><b id="eaten">0</b><span>Gegessen</span></div>
-      <div class="gauge">
-        <svg viewBox="0 0 180 180" aria-hidden="true">
-          <circle class="track" id="gTrack" cx="90" cy="90" r="74" transform="rotate(135 90 90)"/>
-          <circle class="prog" id="gProg" cx="90" cy="90" r="74" transform="rotate(135 90 90)"/>
-        </svg>
-        <div class="mid"><b id="left">0</b><span>kcal übrig</span></div>
-      </div>
-      <div class="side"><b id="goal">0</b><span>Ziel</span></div>
-    </div>
-    <div class="macros">
-      <div class="mac c"><small>Kohlenhydrate</small><div class="bar"><i id="bC"></i></div><span id="tC">0 / 0 g</span></div>
-      <div class="mac p"><small>Eiweiß</small><div class="bar"><i id="bP"></i></div><span id="tP">0 / 0 g</span></div>
-      <div class="mac f"><small>Fett</small><div class="bar"><i id="bF"></i></div><span id="tF">0 / 0 g</span></div>
-    </div>
-    <div class="done-banner">Tag geschafft. Stark!</div>
+<section class="view" id="v-heute" data-title="Heute">
+  <div class="head">
+    <div><div class="hello" id="hello">Hallo</div><h1>Heute</h1><p class="sub" id="date"></p></div>
+    <div class="streak" id="streak"></div>
   </div>
 
-  <div class="sechead">Dein Plan</div>
-  <div class="timeline" id="meals"></div>
-  <p class="secfoot">Tippe auf eine Karte, wenn du gegessen hast. Danach in YAZIO unter dem genannten Namen eintragen. Um Mitternacht beginnt ein neuer Tag.</p>
+  <div class="glass week" id="week"></div>
+
+  <div class="glass hero" aria-live="polite">
+    <div class="ringwrap">
+      <svg viewBox="0 0 230 230" aria-hidden="true">
+        <path class="rtrack" id="rTrack"/>
+        <path class="rglow" id="rGlow"/>
+        <path class="rprog" id="rProg"/>
+        <circle class="rtip" id="rTip" r="6"/>
+      </svg>
+      <div class="rcenter"><b id="left">0</b><span>kcal übrig</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="eaten">0</b><span>Gegessen</span></div>
+      <div class="stat"><b id="pct">0 %</b><span>Geschafft</span></div>
+      <div class="stat"><b id="goal">0</b><span>Ziel</span></div>
+    </div>
+    <div class="macros">
+      <div class="mac c"><div class="mr"><svg viewBox="0 0 62 62"><circle class="t" cx="31" cy="31" r="26"/><circle class="p" id="mC" cx="31" cy="31" r="26"/></svg><div class="v" id="vC">0</div></div><small>Kohlenhydrate</small><em id="gC">von 0 g</em></div>
+      <div class="mac p"><div class="mr"><svg viewBox="0 0 62 62"><circle class="t" cx="31" cy="31" r="26"/><circle class="p" id="mP" cx="31" cy="31" r="26"/></svg><div class="v" id="vP">0</div></div><small>Eiweiß</small><em id="gP">von 0 g</em></div>
+      <div class="mac f"><div class="mr"><svg viewBox="0 0 62 62"><circle class="t" cx="31" cy="31" r="26"/><circle class="p" id="mF" cx="31" cy="31" r="26"/></svg><div class="v" id="vF">0</div></div><small>Fett</small><em id="gF">von 0 g</em></div>
+    </div>
+  </div>
+
+  <div class="glass next" id="next"></div>
+
+  <div class="sechead"><h2>Dein Tag</h2><button type="button" class="reset" id="reset">Zurücksetzen</button></div>
+  <div class="list" id="meals"></div>
+  <p class="foot">Antippen, wenn du gegessen hast. Danach in YAZIO unter dem grauen Namen eintragen. Um Mitternacht startet ein neuer Tag.</p>
 </section>
 
-<section class="view" id="v-einkauf" hidden>
-  <div class="nav"><button type="button" id="resetShop">Alle abwählen</button></div>
-  <h1>Einkauf</h1>
-  <p class="date">Lidl oder Netto · ca. 6–7 € pro Woche</p>
-  <div class="sechead">Für 1 Woche</div>
-  <div class="group" id="shop"></div>
-  <p class="secfoot">Preise ungefähr. Milchdrinks, Brötchen, Wiener und Joghurt hast du zu Hause.</p>
-  <div class="sechead">Abends 1 Minute vorbereiten</div>
-  <div class="group">
+<section class="view" id="v-einkauf" data-title="Einkauf" hidden>
+  <div class="head"><div><div class="hello">Lidl oder Netto</div><h1>Einkauf</h1><p class="sub">ca. 6–7 € pro Woche</p></div><button type="button" class="reset" id="resetShop">Alle abwählen</button></div>
+  <div class="label">Für 1 Woche</div>
+  <div class="glass group" id="shop"></div>
+  <p class="foot">Preise ungefähr. Milchdrinks, Brötchen, Wiener und Joghurt hast du zu Hause.</p>
+  <div class="label">Abends 1 Minute vorbereiten</div>
+  <div class="glass group">
     <div class="row"><div class="rbody"><div class="title">Milchdrink in den Kühlschrank</div></div></div>
     <div class="row"><div class="rbody"><div class="title">Banane in die Sporttasche</div></div></div>
   </div>
 </section>
 
-<section class="view" id="v-yazio" hidden>
-  <div class="nav"></div>
-  <h1>YAZIO</h1>
-  <p class="date">Einmal einrichten, danach 2 Tipps pro Mahlzeit</p>
-  <div class="sechead">So geht's</div>
-  <div class="group">
-    <div class="row"><div class="step">1</div><div class="rbody"><div class="title">Mahlzeiten einmal anlegen</div><div class="detail">In YAZIO eine eigene Mahlzeit erstellen (unter „Rezepte“ → „Erstellt“, je nach App-Version auch über das „+“ im Tagebuch). Name und Zutaten von unten übernehmen. Choco Bobbels, Milchdrink, Joghurt und Erdnüsse am besten mit dem Barcode scannen.</div></div></div>
-    <div class="row"><div class="step">2</div><div class="rbody"><div class="title">Beim Essen eintragen</div><div class="detail">In YAZIO bei der Tageszeit auf „+“ tippen, „Plan“ ins Suchfeld schreiben und die passende Mahlzeit antippen.</div></div></div>
+<section class="view" id="v-yazio" data-title="YAZIO" hidden>
+  <div class="head"><div><div class="hello">Einmal einrichten</div><h1>YAZIO</h1><p class="sub">Danach 2 Tipps pro Mahlzeit</p></div></div>
+  <div class="label">So geht's</div>
+  <div class="glass group">
+    <div class="row"><div class="step">1</div><div class="rbody"><div class="title">Rezept anlegen</div><div class="detail">Startseite (Tab ganz links) → „+“ bei der Mahlzeit → oben rechts „…“ → „Neues Rezept“. Name von unten, Portionen 1, Zutaten mit „+“. Packungen am besten per Barcode scannen.</div></div></div>
+    <div class="row"><div class="step">2</div><div class="rbody"><div class="title">Beim Essen eintragen</div><div class="detail">„+“ bei der Mahlzeit → „Rezepte“ → „Erstellt“ → Plan-Rezept antippen.</div></div></div>
   </div>
-  <p class="secfoot">Automatisch geht es nicht. YAZIO gibt es nur als Handy-App, ohne Web-Version, und es nimmt keine Einträge von anderen Apps an.</p>
-  <div class="sechead">Diese Mahlzeiten anlegen</div>
-  <div class="group" id="yazio"></div>
+  <p class="foot">Automatisch geht es nicht: YAZIO gibt es nur als Handy-App und es nimmt keine Einträge von anderen Apps an.</p>
+  <div class="label">Diese Rezepte anlegen</div>
+  <div class="glass group" id="yazio"></div>
 </section>
 
-<section class="view" id="v-regeln" hidden>
-  <div class="nav"></div>
-  <h1>Regeln</h1>
-  <p class="date">Ziel: +0,25 bis 0,5 kg pro Woche</p>
-  <div class="sechead">Jede Woche</div>
-  <div class="group">
-    <div class="row"><div class="rbody"><div class="title"><b>Montags wiegen</b></div><div class="detail">Morgens nach dem Klo, vor dem Essen. Den Wert Claude sagen.</div></div></div>
-    <div class="row"><div class="rbody"><div class="title"><b>Nach 2 Wochen prüfen</b></div><div class="detail">Weniger als +0,2 kg pro Woche: 1 Glas Milch oder 1 Brötchen mit Bionella mehr. Mehr als +0,6 kg pro Woche über 3 Wochen: Abend-Snack weglassen.</div></div></div>
+<section class="view" id="v-mehr" data-title="Mehr" hidden>
+  <div class="head"><div><div class="hello">Ziel: +0,25 bis 0,5 kg pro Woche</div><h1>Mehr</h1></div></div>
+  <div class="label">Widget für den Homescreen</div>
+  <div class="glass group">
+    <div class="row"><div class="step">1</div><div class="rbody"><div class="title">Scriptable laden</div><div class="detail">Kostenlose App „Scriptable“ aus dem App Store installieren.</div></div></div>
+    <div class="row"><div class="step">2</div><div class="rbody"><div class="title">Code kopieren</div><div class="detail">Tippe auf den Knopf. In Scriptable oben rechts „+“, Code einfügen, Name „Zunehmen“.</div><button type="button" class="btn" id="copyWidget">Widget-Code kopieren</button><div class="detail" id="copyMsg"></div></div></div>
+    <div class="row"><div class="step">3</div><div class="rbody"><div class="title">Widget hinzufügen</div><div class="detail">Homescreen lange drücken → „Bearbeiten“ → „Widget hinzufügen“ → Scriptable, mittlere Größe (breit). Widget gedrückt halten → „Widget bearbeiten“ → Script: „Zunehmen“.</div></div></div>
   </div>
-  <div class="sechead">Immer</div>
-  <div class="group">
-    <div class="row"><div class="rbody"><div class="title"><b>Keine Supplements</b></div><div class="detail">Kein Kreatin, kein Mass Gainer, keine Booster. Mit dem Plan brauchst du sie nicht.</div></div></div>
-    <div class="row"><div class="rbody"><div class="title"><b>Wiener höchstens 2 am Tag</b></div><div class="detail">Darum gibt es sie nur nach dem Training. Mittags lieber Käse oder Schnitzel.</div></div></div>
-    <div class="row"><div class="rbody"><div class="title"><b>8–10 Stunden Schlaf</b></div><div class="detail">Die Muskeln wachsen nachts.</div></div></div>
-    <div class="row"><div class="rbody"><div class="title"><b>Im Gym langsam steigern</b></div><div class="detail">Mehr Gewicht oder mehr Wiederholungen. Keine Maximalversuche.</div></div></div>
-    <div class="row"><div class="rbody"><div class="title"><b>Zum Arzt, mit deinen Eltern</b></div><div class="detail">Wenn du nach 4 Wochen trotz Plan nicht zunimmst, oft müde oder schwindelig bist oder Essen sich nach Stress anfühlt.</div></div></div>
+  <div class="label">Jede Woche</div>
+  <div class="glass group">
+    <div class="row"><div class="rbody"><div class="title">Montags wiegen</div><div class="detail">Morgens nach dem Klo, vor dem Essen. Den Wert Claude sagen.</div></div></div>
+    <div class="row"><div class="rbody"><div class="title">Nach 2 Wochen prüfen</div><div class="detail">Weniger als +0,2 kg pro Woche: 1 Glas Milch oder 1 Brötchen mit Bionella mehr. Mehr als +0,6 kg pro Woche über 3 Wochen: Abend-Snack weglassen.</div></div></div>
+  </div>
+  <div class="label">Immer</div>
+  <div class="glass group">
+    <div class="row"><div class="rbody"><div class="title">Keine Supplements</div><div class="detail">Kein Kreatin, kein Mass Gainer, keine Booster. Mit dem Plan brauchst du sie nicht.</div></div></div>
+    <div class="row"><div class="rbody"><div class="title">Wiener höchstens 2 am Tag</div><div class="detail">Darum gibt es sie nur nach dem Training. Mittags lieber Käse oder Schnitzel.</div></div></div>
+    <div class="row"><div class="rbody"><div class="title">8–10 Stunden Schlaf</div><div class="detail">Die Muskeln wachsen nachts.</div></div></div>
+    <div class="row"><div class="rbody"><div class="title">Im Gym langsam steigern</div><div class="detail">Mehr Gewicht oder mehr Wiederholungen. Keine Maximalversuche.</div></div></div>
+    <div class="row"><div class="rbody"><div class="title">Zum Arzt, mit deinen Eltern</div><div class="detail">Wenn du nach 4 Wochen trotz Plan nicht zunimmst, oft müde oder schwindelig bist oder Essen sich nach Stress anfühlt.</div></div></div>
   </div>
   <p class="note">Nährwerte sind Schätzungen. Allgemeiner Ernährungsplan, kein Ersatz für ärztlichen Rat.</p>
 </section>
-
 </main>
 
-<nav class="tabbar" role="tablist" aria-label="Bereiche">
-  <button type="button" role="tab" data-v="heute" aria-selected="true">
-    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2.2a7.8 7.8 0 1 1 0 15.6 7.8 7.8 0 0 1 0-15.6Zm-1.1 3.3v5l4.2 2.5 1-1.7-3.1-1.8v-4h-2.1Z"/></svg>Heute</button>
-  <button type="button" role="tab" data-v="einkauf" aria-selected="false">
-    <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM1 2v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4l1.1-2h7.5a2 2 0 0 0 1.7-1l3.6-6.5A1 1 0 0 0 20.4 4H5.2l-.9-2H1Z"/></svg>Einkauf</button>
-  <button type="button" role="tab" data-v="yazio" aria-selected="false">
-    <svg viewBox="0 0 24 24"><path d="M10.6 17.4 4.9 11.7l1.4-1.4 4.3 4.3 7.1-7.1 1.4 1.4-8.5 8.5ZM5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 2v14h14V5H5Z"/></svg>YAZIO</button>
-  <button type="button" role="tab" data-v="regeln" aria-selected="false">
-    <svg viewBox="0 0 24 24"><path d="M3 4h16v2H3V4Zm0 5h16v2H3V9Zm0 5h10v2H3v-2Zm0 5h10v2H3v-2Zm13.3-4.7 1.4-1.4 1.8 1.8 3.1-3.1 1.4 1.4-4.5 4.5-3.2-3.2Z"/></svg>Regeln</button>
+<nav class="tabbar" role="tablist" aria-label="Bereiche" id="tabbar">
+  <div class="tabpill" id="tabpill"></div>
+  <button type="button" role="tab" data-v="heute" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2.2a7.8 7.8 0 1 1 0 15.6 7.8 7.8 0 0 1 0-15.6Zm-1.1 3.3v5l4.2 2.5 1-1.7-3.1-1.8v-4h-2.1Z"/></svg>Heute</button>
+  <button type="button" role="tab" data-v="einkauf" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM1 2v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4l1.1-2h7.5a2 2 0 0 0 1.7-1l3.6-6.5A1 1 0 0 0 20.4 4H5.2l-.9-2H1Z"/></svg>Einkauf</button>
+  <button type="button" role="tab" data-v="yazio" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M10.6 17.4 4.9 11.7l1.4-1.4 4.3 4.3 7.1-7.1 1.4 1.4-8.5 8.5ZM5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 2v14h14V5H5Z"/></svg>YAZIO</button>
+  <button type="button" role="tab" data-v="mehr" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M5 10a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/></svg>Mehr</button>
 </nav>
 
 <script>
-// Plan Version 5. Nährwerte geschätzt: k = kcal, c = Kohlenhydrate, p = Eiweiß, f = Fett (g)
+// Plan Version 6 (gleich wie 5). k = kcal, c = Kohlenhydrate, p = Eiweiß, f = Fett (g, geschätzt)
+const ICON={
+  sun:'<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 6v3M5.3 10.3l1.8 1.8M18.7 10.3l-1.8 1.8"/>',
+  bottle:'<path d="M9.5 2.5h5M10.5 2.5v3L8.5 9v10.5a2 2 0 0 0 2 2h3a2 2 0 0 0 2-2V9l-2-3.5v-3M8.5 13h7"/>',
+  bowl:'<path d="M3.5 11.5h17a8.5 8.5 0 0 1-17 0ZM9 8c0-1 1-1.4 1-2.4M13 8c0-1 1-1.4 1-2.4M10 20.5h4"/>',
+  cake:'<path d="M4 9.5c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5S16.4 7 12 7 4 8.1 4 9.5ZM4 9.5v3c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5v-3M4 12.5v3c0 1.4 3.6 2.5 8 2.5s8-1.1 8-2.5v-3M14 7.4l1-2.4"/>',
+  dumb:'<path d="M6.5 7v10M3.5 9.5v5M17.5 7v10M20.5 9.5v5M6.5 12h11"/>',
+  dog:'<path d="M3.5 12.5c0 3 3.6 5.5 8.5 5.5s8.5-2.5 8.5-5.5M5 11.5c0-1.7 1.7-2.5 3.5-2.5h7c1.8 0 3.5.8 3.5 2.5S17.3 14 15.5 14h-7C6.7 14 5 13.2 5 11.5ZM8 11.5c.8-.8 1.6.8 2.4 0s1.6.8 2.4 0 1.6.8 2.4 0"/>',
+  moon:'<path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"/>'
+};
+const TILE={sun:"linear-gradient(135deg,#FFC24B,#FF8A1F)",bottle:"linear-gradient(135deg,#7DD3FC,#3B82F6)",bowl:"linear-gradient(135deg,#FF8A1F,#FF2D6F)",
+  cake:"linear-gradient(135deg,#FCD34D,#F59E0B)",dumb:"linear-gradient(135deg,#34D399,#0EA5A4)",dog:"linear-gradient(135deg,#FB7185,#E11D48)",
+  bowl2:"linear-gradient(135deg,#C084FC,#7C3AED)",moon:"linear-gradient(135deg,#818CF8,#4338CA)"};
 const MEALS=[
-  {t:"06:30",n:"Frühstück",key:"f",opts:[
+  {t:"06:30",n:"Frühstück",i:"sun",key:"f",opts:[
      {l:"Müsli",d:"80 g Choco Bobbels mit 300 ml Milch",k:495,c:76,p:16,f:15,yz:"Plan Frühstück Müsli",z:["Choco Bobbels 80 g (Barcode scannen)","Vollmilch 300 ml"]},
      {l:"Brötchen",d:"2 Brötchen mit Bionella und 1 Glas Milch (250 ml)",k:635,c:86,p:19,f:23,yz:"Plan Frühstück Brötchen",z:["Weizenbrötchen 2 Stück","Bionella 40 g","Vollmilch 250 ml"]}]},
-  {t:"09:30",n:"Milchdrink",d:"In der großen Pause. Morgens kalt aus dem Kühlschrank einpacken.",k:270,c:40,p:14,f:6,yz:"Milchdrink (Favorit)"},
-  {t:"13:45",n:"Mittag: Nudeln mit Käse",d:"125 g Nudeln (roh gewogen), mit 1 EL Butter vermischt, Ketchup drauf und 40 g Reibekäse drüber. Gibt es Schnitzel, nimm das statt Käse.",k:745,c:100,p:25,f:26,yz:"Plan Mittag Nudeln",z:["Nudeln ungekocht 125 g","Butter 15 g","Ketchup 40 g","Gouda gerieben 40 g"]},
-  {t:"14:45",n:"Pfannkuchen vom Papa",d:"45 Minuten vor dem Training.",k:280,c:35,p:9,f:11,yz:"Pfannkuchen, 1 Stück (Favorit)"},
-  {t:"15:30",n:"Training",d:"1 Banane statt Laugenbrezel. 0,5–1 l Wasser trinken.",gym:true,k:105,c:24,p:1,f:0,yz:"Banane, 1 Stück (Favorit)"},
-  {t:"17:15",n:"Brötchen mit Wiener",d:"2 Brötchen mit je 1 Wiener.",k:530,c:57,p:22,f:24,yz:"Plan Brötchen Wiener",z:["Weizenbrötchen 2 Stück","Wiener Würstchen 2 Stück","Ketchup oder Senf 20 g"]},
-  {t:"19:00",n:"Abend: Nudeln mit Käse",d:"125 g Nudeln (roh gewogen), mit 1 EL Butter vermischt, Ketchup drauf und 30 g Reibekäse drüber.",k:710,c:100,p:23,f:23,yz:"Plan Abend Nudeln",z:["Nudeln ungekocht 125 g","Butter 15 g","Ketchup 40 g","Gouda gerieben 30 g"]},
-  {t:"21:00",n:"Abend-Snack",key:"s",opts:[
+  {t:"09:30",n:"Milchdrink",i:"bottle",d:"In der großen Pause. Morgens kalt aus dem Kühlschrank einpacken.",k:270,c:40,p:14,f:6,yz:"Milchdrink (Favorit)"},
+  {t:"13:45",n:"Mittag: Nudeln mit Käse",i:"bowl",d:"125 g Nudeln (roh gewogen), mit 1 EL Butter vermischt, Ketchup drauf und 40 g Reibekäse drüber. Gibt es Schnitzel, nimm das statt Käse.",k:745,c:100,p:25,f:26,yz:"Plan Mittag Nudeln",z:["Nudeln ungekocht 125 g","Butter 15 g","Ketchup 40 g","Gouda gerieben 40 g"]},
+  {t:"14:45",n:"Pfannkuchen vom Papa",i:"cake",d:"45 Minuten vor dem Training.",k:280,c:35,p:9,f:11,yz:"Pfannkuchen, 1 Stück (Favorit)"},
+  {t:"15:30",n:"Training",i:"dumb",gym:true,d:"1 Banane statt Laugenbrezel. 0,5–1 l Wasser trinken.",k:105,c:24,p:1,f:0,yz:"Banane, 1 Stück (Favorit)"},
+  {t:"17:15",n:"Brötchen mit Wiener",i:"dog",d:"2 Brötchen mit je 1 Wiener.",k:530,c:57,p:22,f:24,yz:"Plan Brötchen Wiener",z:["Weizenbrötchen 2 Stück","Wiener Würstchen 2 Stück","Ketchup oder Senf 20 g"]},
+  {t:"19:00",n:"Abend: Nudeln mit Käse",i:"bowl",tile:"bowl2",d:"125 g Nudeln (roh gewogen), mit 1 EL Butter vermischt, Ketchup drauf und 30 g Reibekäse drüber.",k:710,c:100,p:23,f:23,yz:"Plan Abend Nudeln",z:["Nudeln ungekocht 125 g","Butter 15 g","Ketchup 40 g","Gouda gerieben 30 g"]},
+  {t:"21:00",n:"Abend-Snack",i:"moon",key:"s",opts:[
      {l:"Erdnüsse",d:"50 g geröstete Erdnüsse (die für 99 Cent)",k:300,c:5,p:13,f:25,yz:"Erdnüsse 50 g (Favorit)"},
      {l:"Joghurt",d:"150 g Joghurt mit 40 g Choco Bobbels",k:250,c:37,p:8,f:7,yz:"Plan Joghurt",z:["Joghurt 150 g (Barcode scannen)","Choco Bobbels 40 g"]}]}
 ];
@@ -273,118 +352,165 @@ const SHOP=[
 ];
 const CHECK='<svg viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7"/></svg>';
 const SMALL='<svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5"/></svg>';
-const SPARK=["#FF9500","#FF2D55","#FFB020","#34C759","#32ADE6","#AF52DE"];
+const FLAME='<svg viewBox="0 0 24 24"><defs><linearGradient id="fl" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF2D6F"/><stop offset="1" stop-color="#FFC24B"/></linearGradient></defs><path fill="url(#fl)" d="M12 2c1 3.5 5 5.6 5 10.5A5 5 0 0 1 12 22a5 5 0 0 1-5-5c0-2.4 1.3-3.8 2.3-5 .3 1.6 1.1 2.6 2.2 2.9C11 12 10.6 8 12 2Z"/></svg>';
+const COLORS=["#FFC24B","#FF8A1F","#FF2D6F","#30D158","#3BC9F5","#A78BFA","#FFFFFF"];
+
 const fmt=n=>Math.round(n).toLocaleString("de-DE");
 const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const dayKey=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
+const keyOf=d=>d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+const dayKey=()=>keyOf(new Date());
 function load(k,f){try{const v=JSON.parse(localStorage.getItem(k));return v??f}catch(e){return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 const DK="z4-done-";
-let today=dayKey();
-let done=load(DK+today,{});
-let picks=load("z4-picks",{f:0,s:0});
-let shop=load("z4-shop",{});
+let today=dayKey(), done=load(DK+today,{}), picks=load("z4-picks",{f:0,s:0}), shop=load("z4-shop",{}), hist=load("z6-hist",{});
 const val=m=>m.opts?m.opts[picks[m.key]||0]:m;
 const sum=(key,onlyDone)=>MEALS.reduce((s,m,i)=>s+((!onlyDone||done[i])?val(m)[key]:0),0);
+const doneCount=()=>MEALS.filter((m,i)=>done[i]).length;
 
-// Zahlen weich hochzählen
-const shown={};
-function tween(id,to){
-  const el=document.getElementById(id), from=shown[id]??0, t0=performance.now(), dur=700;
-  shown[id]=to;
-  const step=now=>{const k=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-k,3);
-    el.textContent=fmt(from+(to-from)*e); if(k<1)requestAnimationFrame(step)};
-  requestAnimationFrame(step);
-}
-const R=74, C=2*Math.PI*R, ARC=C*.75;
-document.getElementById("gTrack").style.strokeDasharray=`${ARC} ${C}`;
+// weiche Übergänge für Zahlen und Ringe
+const cur={};
+function tween(id,to,dur,draw){const from=cur[id]??0;cur[id]=to;const t0=performance.now();
+  const step=now=>{const k=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-k,4);draw(from+(to-from)*e);if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+const num=(id,to,suffix="")=>tween(id,to,800,v=>document.getElementById(id).textContent=fmt(v)+suffix);
+
+// großer Bogen (270°)
+const CX=115,CY=115,RR=92,A0=135,SPAN=270;
+const pt=a=>{const r=a*Math.PI/180;return[CX+RR*Math.cos(r),CY+RR*Math.sin(r)]};
+function arcPath(frac){const a1=A0+SPAN*Math.max(0.0001,Math.min(1,frac));const[x0,y0]=pt(A0),[x1,y1]=pt(a1);
+  return`M${x0.toFixed(2)} ${y0.toFixed(2)} A${RR} ${RR} 0 ${a1-A0>180?1:0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`}
+document.getElementById("rTrack").setAttribute("d",arcPath(1));
+function drawRing(f){const d=arcPath(f);const show=f>0.002;
+  ["rProg","rGlow"].forEach(id=>{const el=document.getElementById(id);el.setAttribute("d",d);el.style.opacity=show?"":"0"});
+  const[x,y]=pt(A0+SPAN*Math.min(1,f));const tip=document.getElementById("rTip");tip.setAttribute("cx",x);tip.setAttribute("cy",y);tip.style.opacity=show?1:0}
+const MC=2*Math.PI*26;
+function drawMac(id,f){document.getElementById(id).style.strokeDasharray=`${Math.max(0,Math.min(1,f))*MC} ${MC}`}
+
 function updateHero(){
-  const gk=sum("k"), ek=sum("k",true);
-  tween("eaten",ek); tween("goal",gk); tween("left",Math.max(0,gk-ek));
-  const gp=document.getElementById("gProg");
-  gp.style.strokeDasharray=`${Math.max(.001,ARC*Math.min(1,ek/gk))} ${C}`;
-  gp.style.opacity=ek>0?1:0;
-  [["c","C"],["p","P"],["f","F"]].forEach(([k,K])=>{
-    const g=sum(k), e=sum(k,true);
-    document.getElementById("b"+K).style.width=Math.min(100,e/g*100)+"%";
-    document.getElementById("t"+K).textContent=`${fmt(e)} / ${fmt(g)} g`;
-  });
-  const c=MEALS.filter((m,i)=>done[i]).length;
-  document.getElementById("hero").classList.toggle("complete",c===MEALS.length);
-  document.getElementById("date").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"})+` · ${c} von ${MEALS.length} gegessen`;
+  const gk=sum("k"),ek=sum("k",true);
+  num("eaten",ek);num("goal",gk);num("left",Math.max(0,gk-ek));num("pct",ek/gk*100," %");
+  tween("ring",ek/gk,1000,drawRing);
+  [["c","C"],["p","P"],["f","F"]].forEach(([k,K])=>{const g=sum(k),e=sum(k,true);
+    drawMac("m"+K,e/g);num("v"+K,e);document.getElementById("g"+K).textContent=`von ${fmt(g)} g`});
+  const c=doneCount();
+  hist[today]=c/MEALS.length;store("z6-hist",hist);
+  document.getElementById("date").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});
+  renderWeek();renderStreak();renderNext();
+}
+function renderWeek(){
+  const now=new Date(),dow=(now.getDay()+6)%7,mon=new Date(now);mon.setDate(now.getDate()-dow);
+  const names=["Mo","Di","Mi","Do","Fr","Sa","So"],C=2*Math.PI*15;let h="";
+  for(let i=0;i<7;i++){const d=new Date(mon);d.setDate(mon.getDate()+i);const k=keyOf(d),f=hist[k]||0;
+    const cls=["day",k===today?"today":"",d>now&&k!==today?"future":"",f>=1?"full":""].join(" ");
+    h+=`<div class="${cls}">${names[i]}<svg viewBox="0 0 36 36"><circle class="tr" cx="18" cy="18" r="15"/>${f>0?`<circle class="pr" cx="18" cy="18" r="15" style="stroke-dasharray:${f*C} ${C}"/>`:""}${f>=1?`<circle cx="18" cy="18" r="11" fill="url(#gArc)"/>`:""}<text class="num" x="18" y="22" text-anchor="middle">${d.getDate()}</text></svg></div>`}
+  document.getElementById("week").innerHTML=h;
+}
+function renderStreak(){
+  let n=0;const d=new Date();if((hist[keyOf(d)]||0)<1)d.setDate(d.getDate()-1);
+  while((hist[keyOf(d)]||0)>=1){n++;d.setDate(d.getDate()-1)}
+  const el=document.getElementById("streak");el.classList.toggle("hot",n>0);
+  el.innerHTML=FLAME+(n>0?`${n} ${n===1?"Tag":"Tage"}`:"Serie starten");
+}
+function when(t){const[h,m]=t.split(":").map(Number);const d=new Date();d.setHours(h,m,0,0);const diff=Math.round((d-new Date())/60000);
+  if(diff>0){const H=Math.floor(diff/60),M=diff%60;return`um ${t} · in ${H?H+" Std ":""}${M} Min`}
+  if(diff>-60)return`um ${t} · jetzt`;return`seit ${t} fällig`}
+function renderNext(){
+  const box=document.getElementById("next"),i=MEALS.findIndex((m,j)=>!done[j]);
+  if(i<0){box.className="glass next alldone";box.innerHTML=`<div class="tile" style="background:linear-gradient(135deg,#30D158,#2DD4BF)"><svg viewBox="0 0 24 24" style="stroke:#fff;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5 10 17.5 19 7"/></svg></div><div class="nbody"><div class="nlabel">Fertig für heute</div><div class="ntitle">Alles gegessen</div><div class="nwhen">Morgen um ${MEALS[0].t} geht's weiter.</div></div>`;return}
+  const m=MEALS[i],v=val(m);box.className="glass next";
+  box.innerHTML=`<div class="tile" style="background:${TILE[m.tile||m.i]}"><svg viewBox="0 0 24 24" style="stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round">${ICON[m.i]}</svg></div>
+    <div class="nbody"><div class="nlabel">Als Nächstes</div><div class="ntitle">${esc(m.n)}</div><div class="nwhen">${when(m.t)}</div></div>
+    <button type="button" class="eat" id="eatBtn">Gegessen</button>`;
+  document.getElementById("eatBtn").addEventListener("click",e=>{toggle(i);burst(e.currentTarget,false)});
 }
 function burst(host,green){
-  for(let n=0;n<14;n++){
-    const s=document.createElement("span"); s.className="spark";
-    const a=Math.random()*Math.PI*2, d=26+Math.random()*30;
-    s.style.setProperty("--x",Math.cos(a)*d+"px"); s.style.setProperty("--y",Math.sin(a)*d+"px");
-    s.style.background=green?["#34C759","#00C7BE","#FFD60A"][n%3]:SPARK[n%SPARK.length];
-    host.appendChild(s); setTimeout(()=>s.remove(),750);
-  }
+  for(let n=0;n<16;n++){const s=document.createElement("span");s.className="spark";const a=Math.random()*Math.PI*2,d=28+Math.random()*34;
+    s.style.setProperty("--x",Math.cos(a)*d+"px");s.style.setProperty("--y",Math.sin(a)*d+"px");s.style.setProperty("--r",(Math.random()*540-270)+"deg");
+    s.style.background=green?["#30D158","#2DD4BF","#FFD60A"][n%3]:COLORS[n%COLORS.length];host.appendChild(s);setTimeout(()=>s.remove(),850)}
+}
+// Konfetti über den ganzen Bildschirm, wenn der Tag geschafft ist
+function celebrate(){
+  const cv=document.getElementById("fx"),ctx=cv.getContext("2d"),dpr=window.devicePixelRatio||1;
+  cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;cv.style.width=innerWidth+"px";cv.style.height=innerHeight+"px";ctx.setTransform(dpr,0,0,dpr,0,0);
+  const P=Array.from({length:170},()=>({x:innerWidth/2+(Math.random()-.5)*80,y:innerHeight*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*15-5,
+    w:5+Math.random()*6,h:8+Math.random()*8,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:COLORS[Math.floor(Math.random()*COLORS.length)]}));
+  const t0=performance.now();const toast=document.getElementById("toast");toast.classList.add("on");setTimeout(()=>toast.classList.remove("on"),2600);
+  const frame=now=>{const t=now-t0;ctx.clearRect(0,0,innerWidth,innerHeight);
+    P.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;ctx.save();ctx.globalAlpha=Math.max(0,1-t/3200);ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore()});
+    if(t<3300)requestAnimationFrame(frame);else ctx.clearRect(0,0,innerWidth,innerHeight)};requestAnimationFrame(frame);
+}
+function toggle(i){
+  const before=doneCount();done[i]=!done[i];store(DK+today,done);
+  renderMeals(i);updateHero();
+  if(done[i]){const el=document.querySelectorAll("#meals .item")[i];if(el)burst(el.querySelector(".chk"),MEALS[i].gym)}
+  if(doneCount()===MEALS.length&&before<MEALS.length)setTimeout(celebrate,250);
 }
 function renderMeals(justIdx){
-  const box=document.getElementById("meals"); box.innerHTML="";
+  const box=document.getElementById("meals");box.innerHTML="";
   const next=MEALS.findIndex((m,i)=>!done[i]);
   MEALS.forEach((m,i)=>{
-    const v=val(m);
+    const v=val(m),pi=picks[m.key]||0;
     const it=document.createElement("div");
-    it.className="item"+(m.gym?" gym":"")+(done[i]?" done":"")+(i===next?" next":"")+(i===justIdx?" just":"");
-    if(justIdx===undefined) it.style.animationDelay=(i*45)+"ms"; else it.style.animation="none";
-    it.innerHTML=`<div class="tcol"><div class="dot"></div><div class="tlabel">${m.t}</div></div>
-      <div class="card" role="checkbox" aria-checked="${!!done[i]}" tabindex="0">
-        <span class="badge">Als Nächstes</span>
-        <div class="cbody">
-          <div class="ctitle">${esc(m.n)}</div>
-          <div class="cdetail">${esc(v.d)}</div>
-          ${m.opts?`<div class="seg" role="group" aria-label="${esc(m.n)} wählen">${m.opts.map((o,j)=>`<button type="button" data-j="${j}" aria-pressed="${j===(picks[m.key]||0)}">${o.l}</button>`).join("")}</div>`:""}
+    it.className="glass item"+(m.gym?" gym":"")+(done[i]?" done":"")+(i===next?" isnext":"")+(i===justIdx?" just":"");
+    if(justIdx===undefined)it.style.animationDelay=(i*55)+"ms";else if(i!==justIdx)it.style.animation="none";
+    it.setAttribute("role","checkbox");it.setAttribute("aria-checked",!!done[i]);it.tabIndex=0;
+    it.innerHTML=`<div class="tile" style="background:${TILE[m.tile||m.i]}"><svg viewBox="0 0 24 24">${ICON[m.i]}</svg></div>
+      <div class="ibody">
+        <div class="itime">${m.t}<span class="now">Als Nächstes</span></div>
+        <div class="ititle">${esc(m.n)}</div>
+        <div class="more"><div>
+          <div class="idetail">${esc(v.d)}</div>
+          ${m.opts?`<div class="seg" role="group" aria-label="${esc(m.n)} wählen"><div class="pill" style="transform:translateX(${pi*100}%)"></div>${m.opts.map((o,j)=>`<button type="button" data-j="${j}" aria-pressed="${j===pi}">${o.l}</button>`).join("")}</div>`:""}
           <div class="chips"><span class="chip k">${fmt(v.k)} kcal</span><span class="chip c">K ${v.c} g</span><span class="chip p">E ${v.p} g</span><span class="chip f">F ${v.f} g</span></div>
           <div class="yz">YAZIO: <b>${esc(v.yz)}</b></div>
-        </div>
-        <div class="chk">${CHECK}</div>
-      </div>`;
-    const card=it.querySelector(".card");
-    const toggle=()=>{done[i]=!done[i];store(DK+today,done);
-      renderMeals(i);updateHero();
-      if(done[i]){const host=document.querySelectorAll(".item")[i].querySelector(".chk");burst(host,m.gym)}};
-    card.addEventListener("click",e=>{if(e.target.closest(".seg"))return;toggle()});
-    card.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()}});
-    it.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{picks[m.key]=+b.dataset.j;store("z4-picks",picks);renderMeals(-1);updateHero()}));
+        </div></div>
+      </div>
+      <div class="chk">${CHECK}</div>`;
+    it.addEventListener("click",e=>{if(e.target.closest(".seg"))return;toggle(i)});
+    it.addEventListener("keydown",e=>{if(e.target!==it)return;if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle(i)}});
+    it.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{
+      picks[m.key]=+b.dataset.j;store("z4-picks",picks);
+      it.querySelector(".pill").style.transform=`translateX(${picks[m.key]*100}%)`;
+      setTimeout(()=>{renderMeals(-1);updateHero()},260)}));
     box.appendChild(it);
   });
 }
 function renderShop(){
-  const box=document.getElementById("shop"); box.innerHTML="";
-  SHOP.forEach((s,i)=>{
-    const r=document.createElement("div");
-    r.className="row tap"+(shop[i]?" on":"");
-    r.setAttribute("role","checkbox"); r.setAttribute("aria-checked",!!shop[i]); r.tabIndex=0;
+  const box=document.getElementById("shop");box.innerHTML="";
+  SHOP.forEach((s,i)=>{const r=document.createElement("div");r.className="row tap"+(shop[i]?" on":"");
+    r.setAttribute("role","checkbox");r.setAttribute("aria-checked",!!shop[i]);r.tabIndex=0;
     r.innerHTML=`<div class="rchk">${SMALL}</div><div class="rbody"><div class="top"><div class="title">${s.n}</div><div class="price">${s.c}</div></div><div class="detail">${s.d}</div></div>`;
-    const toggle=()=>{shop[i]=!shop[i];store("z4-shop",shop);renderShop()};
-    r.addEventListener("click",toggle);
-    r.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()}});
-    box.appendChild(r);
-  });
+    const t=()=>{shop[i]=!shop[i];store("z4-shop",shop);renderShop()};
+    r.addEventListener("click",t);r.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();t()}});box.appendChild(r)});
 }
 function renderYazio(){
-  const box=document.getElementById("yazio"); box.innerHTML="";
-  MEALS.flatMap(m=>m.opts?m.opts:[m]).filter(v=>v.z).forEach(v=>{
-    const r=document.createElement("div"); r.className="row";
-    r.innerHTML=`<div class="rbody"><div class="title">${esc(v.yz)}</div><ul class="ingr">${v.z.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
-    box.appendChild(r);
-  });
-  const fav=document.createElement("div"); fav.className="row";
-  fav.innerHTML=`<div class="rbody"><div class="title">Als Favorit speichern</div><div class="detail">Milchdrink, Pfannkuchen, Banane und Erdnüsse einmal suchen oder scannen und mit dem Herz merken.</div></div>`;
-  box.appendChild(fav);
+  const box=document.getElementById("yazio");box.innerHTML="";
+  MEALS.flatMap(m=>m.opts?m.opts:[m]).filter(v=>v.z).forEach(v=>{const r=document.createElement("div");r.className="row";
+    r.innerHTML=`<div class="rbody"><div class="title">${esc(v.yz)}</div><ul class="ingr">${v.z.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;box.appendChild(r)});
+  const f=document.createElement("div");f.className="row";
+  f.innerHTML=`<div class="rbody"><div class="title">Als Favorit speichern</div><div class="detail">Milchdrink, Pfannkuchen, Banane und Erdnüsse einmal suchen oder scannen und mit dem Herz merken.</div></div>`;box.appendChild(f);
 }
-document.getElementById("reset").addEventListener("click",()=>{done={};store(DK+today,done);renderMeals(-1);updateHero()});
-document.getElementById("resetShop").addEventListener("click",()=>{shop={};store("z4-shop",shop);renderShop()});
-document.querySelectorAll(".tabbar button").forEach(b=>b.addEventListener("click",()=>{
-  document.querySelectorAll(".tabbar button").forEach(x=>x.setAttribute("aria-selected",x===b));
+// Widget-Code kopieren
+document.getElementById("copyWidget").addEventListener("click",async()=>{
+  const msg=document.getElementById("copyMsg");
+  try{const code=await (await fetch("widget.js",{cache:"no-store"})).text();await navigator.clipboard.writeText(code);msg.textContent="Kopiert. Jetzt in Scriptable einfügen."}
+  catch(e){msg.innerHTML='Kopieren ging nicht. Öffne <b>jakobvonruff.github.io/zunehmen-app/widget.js</b> in Safari und kopiere alles.'}
+});
+// Tabs
+const tabs=[...document.querySelectorAll(".tabbar button")];
+tabs.forEach((b,idx)=>b.addEventListener("click",()=>{
+  tabs.forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.getElementById("tabpill").style.transform=`translateX(${idx*100}%)`;
   document.querySelectorAll(".view").forEach(v=>v.hidden=v.id!=="v-"+b.dataset.v);
+  document.getElementById("topbar").textContent=document.getElementById("v-"+b.dataset.v).dataset.title;
   window.scrollTo(0,0);
 }));
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dayKey()!==today){today=dayKey();done=load(DK+today,{});renderMeals();updateHero()}});
-renderMeals();renderShop();renderYazio();updateHero();
+addEventListener("scroll",()=>document.getElementById("topbar").classList.toggle("on",scrollY>70),{passive:true});
+document.getElementById("reset").addEventListener("click",()=>{done={};store(DK+today,done);renderMeals(-1);updateHero()});
+document.getElementById("resetShop").addEventListener("click",()=>{shop={};store("z4-shop",shop);renderShop()});
+function greet(){const h=new Date().getHours();document.getElementById("hello").textContent=h<11?"Guten Morgen":h<17?"Guten Tag":"Guten Abend"}
+document.addEventListener("visibilitychange",()=>{if(document.hidden)return;greet();if(dayKey()!==today){today=dayKey();done=load(DK+today,{});renderMeals()}updateHero()});
+setInterval(renderNext,30000);
+greet();renderMeals();renderShop();renderYazio();updateHero();
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 </script>
 </body>
