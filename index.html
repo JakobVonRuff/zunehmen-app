@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Zunehmen</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Zunehmen">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+<meta name="description" content="Täglicher Essensplan zum gesunden Zunehmen mit Abhak-Liste.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+/* iOS-Look: gruppierte Listen, große Titel, Fitness-Ringe, Tab-Leiste unten */
+:root{
+  --bg:#F2F2F7; --card:#FFFFFF; --label:#000000; --label2:rgba(60,60,67,.6); --label3:rgba(60,60,67,.3);
+  --sep:rgba(60,60,67,.29); --fill:rgba(120,120,128,.12); --fill2:rgba(118,118,128,.12);
+  --orange:#FF9500; --green:#34C759; --blue:#007AFF; --red:#FF3B30;
+  --bar:rgba(249,249,249,.86); --seg:#FFFFFF;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#000000; --card:#1C1C1E; --label:#FFFFFF; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3);
+  --sep:rgba(84,84,88,.65); --fill:rgba(120,120,128,.24); --fill2:rgba(118,118,128,.24);
+  --orange:#FF9F0A; --green:#30D158; --blue:#0A84FF; --red:#FF453A;
+  --bar:rgba(22,22,24,.86); --seg:#636366; color-scheme:dark}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--label);font-family:var(--font);font-size:17px;line-height:1.3;-webkit-text-size-adjust:100%}
+body{padding-top:env(safe-area-inset-top,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px);
+  padding-bottom:calc(83px + env(safe-area-inset-bottom,0px))}
+main{max-width:600px;margin:0 auto;padding:0 16px}
+.view[hidden]{display:none!important}
+.nav{display:flex;justify-content:flex-end;min-height:44px;align-items:center}
+.nav button{font:inherit;color:var(--blue);background:none;border:0;padding:8px 0;cursor:pointer}
+h1{font-size:34px;font-weight:700;letter-spacing:.012em;margin:2px 0 2px}
+.date{color:var(--label2);font-size:15px;margin:0 0 18px}
+.sechead{color:var(--label2);font-size:13px;text-transform:uppercase;letter-spacing:.02em;margin:26px 16px 7px}
+.secfoot{color:var(--label2);font-size:13px;margin:7px 16px 0;line-height:1.35}
+.group{background:var(--card);border-radius:10px;overflow:hidden}
+.rings{display:flex;align-items:center;gap:20px;padding:16px}
+.rings svg{width:118px;height:118px;flex:none}
+.rings .track{stroke:var(--fill);fill:none}
+.rings .k{stroke:var(--orange);fill:none;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.rings .p{stroke:var(--green);fill:none;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.stats{display:flex;flex-direction:column;gap:10px;min-width:0}
+.stat small{display:block;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
+.stat b{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.stat span{color:var(--label2);font-size:15px;font-variant-numeric:tabular-nums}
+.stat.k small{color:var(--orange)} .stat.p small{color:var(--green)}
+.count{color:var(--label2);font-size:13px}
+.row{display:flex;align-items:flex-start;gap:12px;padding:11px 16px 11px 16px;position:relative;cursor:pointer;user-select:none}
+.row + .row::before{content:"";position:absolute;top:0;left:52px;right:0;border-top:.5px solid var(--sep)}
+.row.plain{cursor:default}
+.row.plain + .row.plain::before{left:16px}
+.row:active:not(.plain){background:var(--fill2)}
+.chk{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--label3);margin-top:1px;display:grid;place-items:center;transition:background .15s,border-color .15s}
+.chk svg{width:14px;height:14px;opacity:0;stroke:#fff;stroke-width:3;fill:none}
+.row.done .chk{background:var(--orange);border-color:var(--orange)}
+.row.gym.done .chk{background:var(--green);border-color:var(--green)}
+.row.done .chk svg{opacity:1}
+.body{flex:1;min-width:0}
+.top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.title{font-size:17px;font-weight:400}
+.kcal{color:var(--label2);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.time{color:var(--orange);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;margin-bottom:1px}
+.row.gym .time{color:var(--green)}
+.detail{color:var(--label2);font-size:15px;margin-top:2px}
+.row.done .title,.row.done .detail{color:var(--label3)}
+.row.done .title{text-decoration:line-through}
+.seg{display:flex;background:var(--fill);border-radius:9px;padding:2px;margin-top:9px;max-width:280px}
+.seg button{flex:1;font:inherit;font-size:13px;font-weight:500;color:var(--label);background:none;border:0;border-radius:7px;padding:6px 4px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--seg);box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04);font-weight:600}
+.price{color:var(--label2);font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.rule b{font-weight:600}
+.note{color:var(--label2);font-size:13px;text-align:center;margin:28px 16px 8px}
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--bar);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+  border-top:.5px solid var(--sep);display:flex;justify-content:space-around;
+  padding:7px max(8px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 4px) max(8px,env(safe-area-inset-left,0px))}
+.tabbar button{flex:1;max-width:140px;font:inherit;font-size:10px;font-weight:500;color:#999;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:2px 0 6px;cursor:pointer}
+.tabbar svg{width:26px;height:26px;fill:currentColor}
+.tabbar button[aria-selected="true"]{color:var(--orange)}
+button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+
+<section class="view" id="v-heute">
+  <div class="nav"><button type="button" id="reset">Zurücksetzen</button></div>
+  <h1>Heute</h1>
+  <p class="date" id="date"></p>
+
+  <div class="group rings" aria-live="polite">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
+      <g transform="rotate(-90 60 60)">
+        <circle class="track" cx="60" cy="60" r="52" stroke-width="13"/>
+        <circle class="k" id="ringK" cx="60" cy="60" r="52" stroke-width="13"/>
+        <circle class="track" cx="60" cy="60" r="36" stroke-width="13"/>
+        <circle class="p" id="ringP" cx="60" cy="60" r="36" stroke-width="13"/>
+      </g>
+    </svg>
+    <div class="stats">
+      <div class="stat k"><small>Kalorien</small><b id="kNow">0</b><span id="kGoal"> / 3.400 kcal</span></div>
+      <div class="stat p"><small>Protein</small><b id="pNow">0</b><span id="pGoal"> / 142 g</span></div>
+      <div class="count" id="count">0 von 8 erledigt</div>
+    </div>
+  </div>
+
+  <div class="sechead">Mahlzeiten</div>
+  <div class="group" id="meals"></div>
+  <p class="secfoot">Tippe auf eine Zeile, wenn du sie gegessen hast. Um Mitternacht beginnt ein neuer Tag.</p>
+</section>
+
+<section class="view" id="v-einkauf" hidden>
+  <div class="nav"><button type="button" id="resetShop">Alle abwählen</button></div>
+  <h1>Einkauf</h1>
+  <p class="date">Lidl oder Netto · ca. 8–10 € pro Woche</p>
+  <div class="sechead">Für 1 Woche</div>
+  <div class="group" id="shop"></div>
+  <p class="secfoot">Preise ungefähr. Milchdrinks für die Schule nimmst du von zu Hause. Selbst gekauft kosten sie etwa 0,70–1 € pro Stück.</p>
+
+  <div class="sechead">Abends 2 Minuten vorbereiten</div>
+  <div class="group">
+    <div class="row plain"><div class="body"><div class="title">Milchdrink in den Kühlschrank</div></div></div>
+    <div class="row plain"><div class="body"><div class="title">50 g Erdnüsse in eine Dose</div></div></div>
+    <div class="row plain"><div class="body"><div class="title">Banane in die Sporttasche</div></div></div>
+  </div>
+</section>
+
+<section class="view" id="v-regeln" hidden>
+  <div class="nav"></div>
+  <h1>Regeln</h1>
+  <p class="date">Ziel: +0,25 bis 0,5 kg pro Woche</p>
+  <div class="sechead">Jede Woche</div>
+  <div class="group">
+    <div class="row plain rule"><div class="body"><div class="title"><b>Montags wiegen</b></div><div class="detail">Morgens nach dem Klo, vor dem Essen. Den Wert Claude sagen.</div></div></div>
+    <div class="row plain rule"><div class="body"><div class="title"><b>Nach 2 Wochen prüfen</b></div><div class="detail">Weniger als +0,2 kg pro Woche: 1 Glas Milch oder 1 Brötchen mit Bionella mehr. Mehr als +0,6 kg pro Woche über 3 Wochen: Erdnüsse halbieren.</div></div></div>
+  </div>
+  <div class="sechead">Immer</div>
+  <div class="group">
+    <div class="row plain rule"><div class="body"><div class="title"><b>Keine Supplements</b></div><div class="detail">Kein Kreatin, kein Mass Gainer, keine Booster. Mit dem Plan brauchst du sie nicht.</div></div></div>
+    <div class="row plain rule"><div class="body"><div class="title"><b>Wiener höchstens 2 am Tag</b></div><div class="detail">Schnitzel und Quark sind die besseren Eiweißquellen.</div></div></div>
+    <div class="row plain rule"><div class="body"><div class="title"><b>8–10 Stunden Schlaf</b></div><div class="detail">Die Muskeln wachsen nachts.</div></div></div>
+    <div class="row plain rule"><div class="body"><div class="title"><b>Im Gym langsam steigern</b></div><div class="detail">Mehr Gewicht oder mehr Wiederholungen. Keine Maximalversuche.</div></div></div>
+    <div class="row plain rule"><div class="body"><div class="title"><b>Zum Arzt, mit deinen Eltern</b></div><div class="detail">Wenn du nach 4 Wochen trotz Plan nicht zunimmst, oft müde oder schwindelig bist oder Essen sich nach Stress anfühlt.</div></div></div>
+  </div>
+  <p class="note">Allgemeiner Ernährungsplan, kein Ersatz für ärztlichen Rat.</p>
+</section>
+
+</main>
+
+<nav class="tabbar" role="tablist" aria-label="Bereiche">
+  <button type="button" role="tab" data-v="heute" aria-selected="true">
+    <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2.2a7.8 7.8 0 1 1 0 15.6 7.8 7.8 0 0 1 0-15.6Zm-1.1 3.3v5l4.2 2.5 1-1.7-3.1-1.8v-4h-2.1Z"/></svg>Heute</button>
+  <button type="button" role="tab" data-v="einkauf" aria-selected="false">
+    <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM1 2v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4l1.1-2h7.5a2 2 0 0 0 1.7-1l3.6-6.5A1 1 0 0 0 20.4 4H5.2l-.9-2H1Z"/></svg>Einkauf</button>
+  <button type="button" role="tab" data-v="regeln" aria-selected="false">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4Zm0 5h16v2H4V9Zm0 5h10v2H4v-2Zm0 5h10v2H4v-2Zm13.3-4.7 1.4-1.4 1.8 1.8 3.1-3.1 1.4 1.4-4.5 4.5-3.2-3.2Z" transform="translate(-1 0)"/></svg>Regeln</button>
+</nav>
+
+<script>
+const MEALS=[
+  {t:"06:30",n:"Frühstück",opts:[
+     {l:"Müsli",d:"80 g Choco Bobbels mit 300 ml Milch",k:490,p:17},
+     {l:"Brötchen",d:"2 Brötchen mit Bionella und 1 Glas Milch (250 ml)",k:660,p:20}]},
+  {t:"09:30",n:"Milchdrink",d:"1 Milchdrink (400–500 ml). Morgens kalt aus dem Kühlschrank einpacken.",k:260,p:13},
+  {t:"11:30",n:"Erdnüsse",d:"50 g geröstete Erdnüsse aus der Dose",k:300,p:13},
+  {t:"13:45",n:"Mittag: Nudeln",d:"125 g Nudeln (roh) mit 1 EL Butter und Ketchup. Dazu Schnitzel, wenn es eins gibt, sonst 2 Wiener.",k:875,p:28},
+  {t:"14:45",n:"Pfannkuchen vom Papa",d:"45 Minuten vor dem Training, perfekter Zeitpunkt",k:280,p:8},
+  {t:"15:30",n:"Training",d:"1 Banane statt Laugenbrezel. 0,5–1 l Wasser trinken.",k:100,p:1,gym:true},
+  {t:"17:15",n:"Schoko-Quark",d:"250 g Magerquark, 150 g Joghurt und 30 g Choco Bobbels verrührt",k:380,p:38},
+  {t:"19:00",n:"Abend: Nudeln mit Käse",d:"125 g Nudeln (roh) mit 1 EL Butter, Ketchup und 30 g Reibekäse",k:715,p:24}
+];
+const SHOP=[
+  {n:"Erdnüsse geröstet",d:"2 × 200 g · für die 2. Pause",c:"2,50 €"},
+  {n:"Magerquark",d:"3–4 × 500 g · nach dem Training",c:"3–4 €"},
+  {n:"Bananen",d:"1 kg · beim Training",c:"1,50 €"},
+  {n:"Reibekäse (Gouda)",d:"200 g · für die Abend-Nudeln",c:"1,50 €"}
+];
+const CHECK='<svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5"/></svg>';
+const fmt=n=>n.toLocaleString("de-DE");
+const dayKey=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
+function load(k,f){try{const v=JSON.parse(localStorage.getItem(k));return v??f}catch(e){return f}}
+function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+
+let today=dayKey();
+let done=load("z-done-"+today,{});
+let pick=load("z-breakfast",0);
+let shop=load("z-shop",{});
+
+const val=(m)=>m.opts?m.opts[pick]:m;
+const goalK=()=>MEALS.reduce((s,m)=>s+val(m).k,0);
+const goalP=()=>MEALS.reduce((s,m)=>s+val(m).p,0);
+
+function renderMeals(){
+  const box=document.getElementById("meals"); box.innerHTML="";
+  MEALS.forEach((m,i)=>{
+    const v=val(m);
+    const r=document.createElement("div");
+    r.className="row"+(m.gym?" gym":"")+(done[i]?" done":"");
+    r.setAttribute("role","checkbox"); r.setAttribute("aria-checked",!!done[i]); r.tabIndex=0;
+    r.innerHTML=`<div class="chk">${CHECK}</div><div class="body">
+      <div class="time">${m.t}</div>
+      <div class="top"><div class="title">${m.n}</div><div class="kcal">${fmt(v.k)} kcal</div></div>
+      <div class="detail">${v.d} · ${v.p} g Protein</div>
+      ${m.opts?`<div class="seg" role="group" aria-label="Frühstück wählen">${m.opts.map((o,j)=>`<button type="button" data-j="${j}" aria-pressed="${j===pick}">${o.l}</button>`).join("")}</div>`:""}
+    </div>`;
+    const toggle=()=>{done[i]=!done[i];store("z-done-"+today,done);renderMeals();update()};
+    r.addEventListener("click",e=>{if(e.target.closest(".seg"))return;toggle()});
+    r.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()}});
+    r.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{pick=+b.dataset.j;store("z-breakfast",pick);renderMeals();update()}));
+    box.appendChild(r);
+  });
+}
+function renderShop(){
+  const box=document.getElementById("shop"); box.innerHTML="";
+  SHOP.forEach((s,i)=>{
+    const r=document.createElement("div");
+    r.className="row"+(shop[i]?" done":"");
+    r.setAttribute("role","checkbox"); r.setAttribute("aria-checked",!!shop[i]); r.tabIndex=0;
+    r.innerHTML=`<div class="chk">${CHECK}</div><div class="body"><div class="top"><div class="title">${s.n}</div><div class="price">${s.c}</div></div><div class="detail">${s.d}</div></div>`;
+    const toggle=()=>{shop[i]=!shop[i];store("z-shop",shop);renderShop()};
+    r.addEventListener("click",toggle);
+    r.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()}});
+    box.appendChild(r);
+  });
+}
+function ring(el,r,frac){const c=2*Math.PI*r;el.style.strokeDasharray=c;el.style.strokeDashoffset=c*(1-Math.min(1,frac))}
+function update(){
+  let k=0,p=0,c=0;
+  MEALS.forEach((m,i)=>{if(done[i]){const v=val(m);k+=v.k;p+=v.p;c++}});
+  const gk=goalK(),gp=goalP();
+  document.getElementById("kNow").textContent=fmt(k);
+  document.getElementById("pNow").textContent=p;
+  document.getElementById("kGoal").textContent=` / ${fmt(gk)} kcal`;
+  document.getElementById("pGoal").textContent=` / ${gp} g`;
+  document.getElementById("count").textContent=`${c} von ${MEALS.length} erledigt`;
+  ring(document.getElementById("ringK"),52,k/gk);
+  ring(document.getElementById("ringP"),36,p/gp);
+  document.getElementById("date").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});
+}
+document.getElementById("reset").addEventListener("click",()=>{done={};store("z-done-"+today,done);renderMeals();update()});
+document.getElementById("resetShop").addEventListener("click",()=>{shop={};store("z-shop",shop);renderShop()});
+document.querySelectorAll(".tabbar button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".tabbar button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  document.querySelectorAll(".view").forEach(v=>v.hidden=v.id!=="v-"+b.dataset.v);
+  window.scrollTo(0,0);
+}));
+// Neuer Tag, wenn die App über Mitternacht offen bleibt
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dayKey()!==today){today=dayKey();done=load("z-done-"+today,{});renderMeals();update()}});
+renderMeals();renderShop();update();
+if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
+</script>
+</body>
+</html>
