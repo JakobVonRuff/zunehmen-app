@@ -15,11 +15,11 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-192.png">
 <style>
-/* iOS-Look: gruppierte Listen, große Titel, Fitness-Ringe, Tab-Leiste unten */
+/* iOS-Look: gruppierte Listen, große Titel, Tab-Leiste unten. Nur der Plan, keine Zahlen-Anzeige. */
 :root{
   --bg:#F2F2F7; --card:#FFFFFF; --label:#000000; --label2:rgba(60,60,67,.6); --label3:rgba(60,60,67,.3);
   --sep:rgba(60,60,67,.29); --fill:rgba(120,120,128,.12); --fill2:rgba(118,118,128,.12);
-  --orange:#FF9500; --green:#34C759; --blue:#007AFF; --red:#FF3B30;
+  --orange:#FF9500; --green:#34C759; --blue:#007AFF;
   --bar:rgba(249,249,249,.86); --seg:#FFFFFF;
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
   color-scheme:light;
@@ -27,7 +27,7 @@
 @media (prefers-color-scheme: dark){:root{
   --bg:#000000; --card:#1C1C1E; --label:#FFFFFF; --label2:rgba(235,235,245,.6); --label3:rgba(235,235,245,.3);
   --sep:rgba(84,84,88,.65); --fill:rgba(120,120,128,.24); --fill2:rgba(118,118,128,.24);
-  --orange:#FF9F0A; --green:#30D158; --blue:#0A84FF; --red:#FF453A;
+  --orange:#FF9F0A; --green:#30D158; --blue:#0A84FF;
   --bar:rgba(22,22,24,.86); --seg:#636366; color-scheme:dark}}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--label);font-family:var(--font);font-size:17px;line-height:1.3;-webkit-text-size-adjust:100%}
@@ -38,22 +38,11 @@ main{max-width:600px;margin:0 auto;padding:0 16px}
 .nav{display:flex;justify-content:flex-end;min-height:44px;align-items:center}
 .nav button{font:inherit;color:var(--blue);background:none;border:0;padding:8px 0;cursor:pointer}
 h1{font-size:34px;font-weight:700;letter-spacing:.012em;margin:2px 0 2px}
-.date{color:var(--label2);font-size:15px;margin:0 0 18px}
-.sechead{color:var(--label2);font-size:13px;text-transform:uppercase;letter-spacing:.02em;margin:26px 16px 7px}
+.date{color:var(--label2);font-size:15px;margin:0 0 6px}
+.sechead{color:var(--label2);font-size:13px;text-transform:uppercase;letter-spacing:.02em;margin:22px 16px 7px}
 .secfoot{color:var(--label2);font-size:13px;margin:7px 16px 0;line-height:1.35}
 .group{background:var(--card);border-radius:10px;overflow:hidden}
-.rings{display:flex;align-items:center;gap:20px;padding:16px}
-.rings svg{width:118px;height:118px;flex:none}
-.rings .track{stroke:var(--fill);fill:none}
-.rings .k{stroke:var(--orange);fill:none;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
-.rings .p{stroke:var(--green);fill:none;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
-.stats{display:flex;flex-direction:column;gap:10px;min-width:0}
-.stat small{display:block;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.02em}
-.stat b{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
-.stat span{color:var(--label2);font-size:15px;font-variant-numeric:tabular-nums}
-.stat.k small{color:var(--orange)} .stat.p small{color:var(--green)}
-.count{color:var(--label2);font-size:13px}
-.row{display:flex;align-items:flex-start;gap:12px;padding:11px 16px 11px 16px;position:relative;cursor:pointer;user-select:none}
+.row{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;position:relative;cursor:pointer;user-select:none}
 .row + .row::before{content:"";position:absolute;top:0;left:52px;right:0;border-top:.5px solid var(--sep)}
 .row.plain{cursor:default}
 .row.plain + .row.plain::before{left:16px}
@@ -65,23 +54,24 @@ h1{font-size:34px;font-weight:700;letter-spacing:.012em;margin:2px 0 2px}
 .row.done .chk svg{opacity:1}
 .body{flex:1;min-width:0}
 .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.title{font-size:17px;font-weight:400}
-.kcal{color:var(--label2);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.title{font-size:17px}
 .time{color:var(--orange);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;margin-bottom:1px}
 .row.gym .time{color:var(--green)}
 .detail{color:var(--label2);font-size:15px;margin-top:2px}
+.yz{display:inline-block;margin-top:6px;font-size:12px;font-weight:600;color:var(--label2);background:var(--fill);border-radius:6px;padding:2px 7px}
 .row.done .title,.row.done .detail{color:var(--label3)}
 .row.done .title{text-decoration:line-through}
 .seg{display:flex;background:var(--fill);border-radius:9px;padding:2px;margin-top:9px;max-width:280px}
 .seg button{flex:1;font:inherit;font-size:13px;font-weight:500;color:var(--label);background:none;border:0;border-radius:7px;padding:6px 4px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--seg);box-shadow:0 3px 8px rgba(0,0,0,.12),0 3px 1px rgba(0,0,0,.04);font-weight:600}
 .price{color:var(--label2);font-size:15px;white-space:nowrap;font-variant-numeric:tabular-nums}
-.rule b{font-weight:600}
+.step{flex:none;width:24px;height:24px;border-radius:50%;background:var(--blue);color:#fff;font-size:13px;font-weight:600;display:grid;place-items:center;margin-top:1px}
+.ingr{margin:4px 0 0;padding-left:18px;color:var(--label2);font-size:15px}
 .note{color:var(--label2);font-size:13px;text-align:center;margin:28px 16px 8px}
 .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--bar);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
   border-top:.5px solid var(--sep);display:flex;justify-content:space-around;
   padding:7px max(8px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 4px) max(8px,env(safe-area-inset-left,0px))}
-.tabbar button{flex:1;max-width:140px;font:inherit;font-size:10px;font-weight:500;color:#999;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:2px 0 6px;cursor:pointer}
+.tabbar button{flex:1;max-width:120px;font:inherit;font-size:10px;font-weight:500;color:#999;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:2px 0 6px;cursor:pointer}
 .tabbar svg{width:26px;height:26px;fill:currentColor}
 .tabbar button[aria-selected="true"]{color:var(--orange)}
 button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
@@ -95,26 +85,9 @@ button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-of
   <div class="nav"><button type="button" id="reset">Zurücksetzen</button></div>
   <h1>Heute</h1>
   <p class="date" id="date"></p>
-
-  <div class="group rings" aria-live="polite">
-    <svg viewBox="0 0 120 120" aria-hidden="true">
-      <g transform="rotate(-90 60 60)">
-        <circle class="track" cx="60" cy="60" r="52" stroke-width="13"/>
-        <circle class="k" id="ringK" cx="60" cy="60" r="52" stroke-width="13"/>
-        <circle class="track" cx="60" cy="60" r="36" stroke-width="13"/>
-        <circle class="p" id="ringP" cx="60" cy="60" r="36" stroke-width="13"/>
-      </g>
-    </svg>
-    <div class="stats">
-      <div class="stat k"><small>Kalorien</small><b id="kNow">0</b><span id="kGoal"> / 3.400 kcal</span></div>
-      <div class="stat p"><small>Protein</small><b id="pNow">0</b><span id="pGoal"> / 121 g</span></div>
-      <div class="count" id="count">0 von 8 erledigt</div>
-    </div>
-  </div>
-
-  <div class="sechead">Mahlzeiten</div>
+  <div class="sechead">Dein Plan</div>
   <div class="group" id="meals"></div>
-  <p class="secfoot">Tippe auf eine Zeile, wenn du sie gegessen hast. Um Mitternacht beginnt ein neuer Tag.</p>
+  <p class="secfoot">Tippe auf eine Zeile, wenn du gegessen hast, und trag sie danach in YAZIO unter dem grauen Namen ein. Um Mitternacht beginnt ein neuer Tag.</p>
 </section>
 
 <section class="view" id="v-einkauf" hidden>
@@ -123,13 +96,26 @@ button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-of
   <p class="date">Lidl oder Netto · ca. 4–5 € pro Woche</p>
   <div class="sechead">Für 1 Woche</div>
   <div class="group" id="shop"></div>
-  <p class="secfoot">Preise ungefähr. Milchdrinks, Brötchen und Wiener nimmst du von zu Hause. Milchdrinks kosten selbst gekauft etwa 0,70–1 € pro Stück.</p>
-
+  <p class="secfoot">Preise ungefähr. Milchdrinks, Brötchen, Wiener und Joghurt hast du zu Hause.</p>
   <div class="sechead">Abends 1 Minute vorbereiten</div>
   <div class="group">
     <div class="row plain"><div class="body"><div class="title">Milchdrink in den Kühlschrank</div></div></div>
     <div class="row plain"><div class="body"><div class="title">Banane in die Sporttasche</div></div></div>
   </div>
+</section>
+
+<section class="view" id="v-yazio" hidden>
+  <div class="nav"></div>
+  <h1>YAZIO</h1>
+  <p class="date">Einmal einrichten, danach 2 Tipps pro Mahlzeit</p>
+  <div class="sechead">So geht's</div>
+  <div class="group">
+    <div class="row plain"><div class="step">1</div><div class="body"><div class="title">Mahlzeiten einmal anlegen</div><div class="detail">In YAZIO eine eigene Mahlzeit erstellen (unter „Rezepte“ → „Erstellt“, je nach App-Version auch über das „+“ im Tagebuch). Name und Zutaten von unten übernehmen. Choco Bobbels, Milchdrink, Joghurt und Erdnüsse am besten mit dem Barcode scannen.</div></div></div>
+    <div class="row plain"><div class="step">2</div><div class="body"><div class="title">Beim Essen eintragen</div><div class="detail">In YAZIO bei der Tageszeit auf „+“ tippen, „Plan“ ins Suchfeld schreiben und die passende Mahlzeit antippen.</div></div></div>
+  </div>
+  <p class="secfoot">Automatisch geht es nicht. YAZIO nimmt keine Einträge von anderen Apps an, auch nicht über Apple Health.</p>
+  <div class="sechead">Diese Mahlzeiten anlegen</div>
+  <div class="group" id="yazio"></div>
 </section>
 
 <section class="view" id="v-regeln" hidden>
@@ -138,16 +124,16 @@ button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-of
   <p class="date">Ziel: +0,25 bis 0,5 kg pro Woche</p>
   <div class="sechead">Jede Woche</div>
   <div class="group">
-    <div class="row plain rule"><div class="body"><div class="title"><b>Montags wiegen</b></div><div class="detail">Morgens nach dem Klo, vor dem Essen. Den Wert Claude sagen.</div></div></div>
-    <div class="row plain rule"><div class="body"><div class="title"><b>Nach 2 Wochen prüfen</b></div><div class="detail">Weniger als +0,2 kg pro Woche: 1 Glas Milch oder 1 Brötchen mit Bionella mehr. Mehr als +0,6 kg pro Woche über 3 Wochen: Joghurt-Snack weglassen.</div></div></div>
+    <div class="row plain"><div class="body"><div class="title"><b>Montags wiegen</b></div><div class="detail">Morgens nach dem Klo, vor dem Essen. Den Wert Claude sagen.</div></div></div>
+    <div class="row plain"><div class="body"><div class="title"><b>Nach 2 Wochen prüfen</b></div><div class="detail">Weniger als +0,2 kg pro Woche: 1 Glas Milch oder 1 Brötchen mit Bionella mehr. Mehr als +0,6 kg pro Woche über 3 Wochen: Abend-Snack weglassen.</div></div></div>
   </div>
   <div class="sechead">Immer</div>
   <div class="group">
-    <div class="row plain rule"><div class="body"><div class="title"><b>Keine Supplements</b></div><div class="detail">Kein Kreatin, kein Mass Gainer, keine Booster. Mit dem Plan brauchst du sie nicht.</div></div></div>
-    <div class="row plain rule"><div class="body"><div class="title"><b>Wiener höchstens 2 am Tag</b></div><div class="detail">Darum gibt es sie nur nach dem Training. Mittags lieber Käse oder Schnitzel.</div></div></div>
-    <div class="row plain rule"><div class="body"><div class="title"><b>8–10 Stunden Schlaf</b></div><div class="detail">Die Muskeln wachsen nachts.</div></div></div>
-    <div class="row plain rule"><div class="body"><div class="title"><b>Im Gym langsam steigern</b></div><div class="detail">Mehr Gewicht oder mehr Wiederholungen. Keine Maximalversuche.</div></div></div>
-    <div class="row plain rule"><div class="body"><div class="title"><b>Zum Arzt, mit deinen Eltern</b></div><div class="detail">Wenn du nach 4 Wochen trotz Plan nicht zunimmst, oft müde oder schwindelig bist oder Essen sich nach Stress anfühlt.</div></div></div>
+    <div class="row plain"><div class="body"><div class="title"><b>Keine Supplements</b></div><div class="detail">Kein Kreatin, kein Mass Gainer, keine Booster. Mit dem Plan brauchst du sie nicht.</div></div></div>
+    <div class="row plain"><div class="body"><div class="title"><b>Wiener höchstens 2 am Tag</b></div><div class="detail">Darum gibt es sie nur nach dem Training. Mittags lieber Käse oder Schnitzel.</div></div></div>
+    <div class="row plain"><div class="body"><div class="title"><b>8–10 Stunden Schlaf</b></div><div class="detail">Die Muskeln wachsen nachts.</div></div></div>
+    <div class="row plain"><div class="body"><div class="title"><b>Im Gym langsam steigern</b></div><div class="detail">Mehr Gewicht oder mehr Wiederholungen. Keine Maximalversuche.</div></div></div>
+    <div class="row plain"><div class="body"><div class="title"><b>Zum Arzt, mit deinen Eltern</b></div><div class="detail">Wenn du nach 4 Wochen trotz Plan nicht zunimmst, oft müde oder schwindelig bist oder Essen sich nach Stress anfühlt.</div></div></div>
   </div>
   <p class="note">Allgemeiner Ernährungsplan, kein Ersatz für ärztlichen Rat.</p>
 </section>
@@ -159,42 +145,44 @@ button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-of
     <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 2.2a7.8 7.8 0 1 1 0 15.6 7.8 7.8 0 0 1 0-15.6Zm-1.1 3.3v5l4.2 2.5 1-1.7-3.1-1.8v-4h-2.1Z"/></svg>Heute</button>
   <button type="button" role="tab" data-v="einkauf" aria-selected="false">
     <svg viewBox="0 0 24 24"><path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4ZM1 2v2h2l3.6 7.6-1.4 2.4A2 2 0 0 0 7 17h12v-2H7.4l1.1-2h7.5a2 2 0 0 0 1.7-1l3.6-6.5A1 1 0 0 0 20.4 4H5.2l-.9-2H1Z"/></svg>Einkauf</button>
+  <button type="button" role="tab" data-v="yazio" aria-selected="false">
+    <svg viewBox="0 0 24 24"><path d="M10.6 17.4 4.9 11.7l1.4-1.4 4.3 4.3 7.1-7.1 1.4 1.4-8.5 8.5ZM5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm0 2v14h14V5H5Z"/></svg>YAZIO</button>
   <button type="button" role="tab" data-v="regeln" aria-selected="false">
-    <svg viewBox="0 0 24 24"><path d="M4 4h16v2H4V4Zm0 5h16v2H4V9Zm0 5h10v2H4v-2Zm0 5h10v2H4v-2Zm13.3-4.7 1.4-1.4 1.8 1.8 3.1-3.1 1.4 1.4-4.5 4.5-3.2-3.2Z" transform="translate(-1 0)"/></svg>Regeln</button>
+    <svg viewBox="0 0 24 24"><path d="M3 4h16v2H3V4Zm0 5h16v2H3V9Zm0 5h10v2H3v-2Zm0 5h10v2H3v-2Zm13.3-4.7 1.4-1.4 1.8 1.8 3.1-3.1 1.4 1.4-4.5 4.5-3.2-3.2Z"/></svg>Regeln</button>
 </nav>
 
 <script>
+// Plan Version 4. yz = Name der Mahlzeit in YAZIO, z = Zutaten zum Anlegen
 const MEALS=[
-  {t:"06:30",n:"Frühstück",opts:[
-     {l:"Müsli",d:"80 g Choco Bobbels mit 300 ml Milch",k:490,p:17},
-     {l:"Brötchen",d:"2 Brötchen mit Bionella und 1 Glas Milch (250 ml)",k:660,p:20}]},
-  {t:"09:30",n:"Milchdrink",d:"1 Milchdrink (400–500 ml). Morgens kalt aus dem Kühlschrank einpacken.",k:260,p:13},
-  {t:"13:45",n:"Mittag: Nudeln mit Käse",d:"125 g Nudeln (roh) mit 1 EL Butter, Ketchup und 40 g Reibekäse. Gibt es Schnitzel, nimm das statt Käse.",k:755,p:26},
-  {t:"14:45",n:"Pfannkuchen vom Papa",d:"45 Minuten vor dem Training, perfekter Zeitpunkt",k:280,p:8},
-  {t:"15:30",n:"Training",d:"1 Banane statt Laugenbrezel. 0,5–1 l Wasser trinken.",k:100,p:1,gym:true},
-  {t:"17:15",n:"Brötchen mit Wiener",d:"2 Brötchen mit je 1 Wiener",k:550,p:23},
-  {t:"19:00",n:"Abend: Nudeln mit Käse",d:"125 g Nudeln (roh) mit 1 EL Butter, Ketchup und 30 g Reibekäse",k:715,p:24},
-  {t:"21:00",n:"Joghurt-Snack",d:"150 g Joghurt mit 40 g Choco Bobbels",k:250,p:9}
+  {t:"06:30",n:"Frühstück",key:"f",opts:[
+     {l:"Müsli",d:"80 g Choco Bobbels mit 300 ml Milch",yz:"Plan Frühstück Müsli",z:["Choco Bobbels 80 g (Barcode scannen)","Vollmilch 300 ml"]},
+     {l:"Brötchen",d:"2 Brötchen mit Bionella und 1 Glas Milch (250 ml)",yz:"Plan Frühstück Brötchen",z:["Weizenbrötchen 2 Stück","Bionella 40 g","Vollmilch 250 ml"]}]},
+  {t:"09:30",n:"Milchdrink",d:"In der großen Pause. Morgens kalt aus dem Kühlschrank einpacken.",yz:"Milchdrink (Favorit)"},
+  {t:"13:45",n:"Mittag: Nudeln mit Käse",d:"125 g Nudeln (roh gewogen) mit 1 EL Butter, Ketchup und 40 g Reibekäse. Gibt es Schnitzel, nimm das statt Käse.",yz:"Plan Mittag Nudeln",z:["Nudeln ungekocht 125 g","Butter 15 g","Ketchup 40 g","Gouda gerieben 40 g"]},
+  {t:"14:45",n:"Pfannkuchen vom Papa",d:"45 Minuten vor dem Training.",yz:"Pfannkuchen, 1 Stück (Favorit)"},
+  {t:"15:30",n:"Training",d:"1 Banane statt Laugenbrezel. 0,5–1 l Wasser trinken.",gym:true,yz:"Banane, 1 Stück (Favorit)"},
+  {t:"17:15",n:"Brötchen mit Wiener",d:"2 Brötchen mit je 1 Wiener.",yz:"Plan Brötchen Wiener",z:["Weizenbrötchen 2 Stück","Wiener Würstchen 2 Stück","Ketchup oder Senf 20 g"]},
+  {t:"19:00",n:"Abend: Nudeln mit Käse",d:"125 g Nudeln (roh gewogen) mit 1 EL Butter, Ketchup und 30 g Reibekäse.",yz:"Plan Abend Nudeln",z:["Nudeln ungekocht 125 g","Butter 15 g","Ketchup 40 g","Gouda gerieben 30 g"]},
+  {t:"21:00",n:"Abend-Snack",key:"s",opts:[
+     {l:"Erdnüsse",d:"50 g geröstete Erdnüsse (die für 99 Cent)",yz:"Erdnüsse 50 g (Favorit)"},
+     {l:"Joghurt",d:"150 g Joghurt mit 40 g Choco Bobbels",yz:"Plan Joghurt",z:["Joghurt 150 g (Barcode scannen)","Choco Bobbels 40 g"]}]}
 ];
 const SHOP=[
+  {n:"Erdnüsse geröstet",d:"2 × 200 g · für den Abend-Snack",c:"je 0,99 €"},
   {n:"Bananen",d:"1 kg · beim Training",c:"1,50 €"},
-  {n:"Reibekäse (Gouda)",d:"2 × 250 g · für Mittag- und Abend-Nudeln",c:"3 €"}
+  {n:"Reibekäse (Gouda)",d:"2 × 250 g · für die Nudeln",c:"3 €"}
 ];
 const CHECK='<svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5"/></svg>';
-const fmt=n=>n.toLocaleString("de-DE");
 const dayKey=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
 function load(k,f){try{const v=JSON.parse(localStorage.getItem(k));return v??f}catch(e){return f}}
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-
+const DK="z4-done-";
 let today=dayKey();
-const DK="z3-done-";
 let done=load(DK+today,{});
-let pick=load("z-breakfast",0);
-let shop=load("z-shop",{});
-
-const val=(m)=>m.opts?m.opts[pick]:m;
-const goalK=()=>MEALS.reduce((s,m)=>s+val(m).k,0);
-const goalP=()=>MEALS.reduce((s,m)=>s+val(m).p,0);
+let picks=load("z4-picks",{f:0,s:0});
+let shop=load("z4-shop",{});
+const val=m=>m.opts?m.opts[picks[m.key]||0]:m;
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 function renderMeals(){
   const box=document.getElementById("meals"); box.innerHTML="";
@@ -205,16 +193,19 @@ function renderMeals(){
     r.setAttribute("role","checkbox"); r.setAttribute("aria-checked",!!done[i]); r.tabIndex=0;
     r.innerHTML=`<div class="chk">${CHECK}</div><div class="body">
       <div class="time">${m.t}</div>
-      <div class="top"><div class="title">${m.n}</div><div class="kcal">${fmt(v.k)} kcal</div></div>
-      <div class="detail">${v.d} · ${v.p} g Protein</div>
-      ${m.opts?`<div class="seg" role="group" aria-label="Frühstück wählen">${m.opts.map((o,j)=>`<button type="button" data-j="${j}" aria-pressed="${j===pick}">${o.l}</button>`).join("")}</div>`:""}
+      <div class="title">${esc(m.n)}</div>
+      <div class="detail">${esc(v.d)}</div>
+      ${m.opts?`<div class="seg" role="group" aria-label="${esc(m.n)} wählen">${m.opts.map((o,j)=>`<button type="button" data-j="${j}" aria-pressed="${j===(picks[m.key]||0)}">${o.l}</button>`).join("")}</div>`:""}
+      <div class="yz">YAZIO: ${esc(v.yz)}</div>
     </div>`;
-    const toggle=()=>{done[i]=!done[i];store(DK+today,done);renderMeals();update()};
+    const toggle=()=>{done[i]=!done[i];store(DK+today,done);renderMeals()};
     r.addEventListener("click",e=>{if(e.target.closest(".seg"))return;toggle()});
     r.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()}});
-    r.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{pick=+b.dataset.j;store("z-breakfast",pick);renderMeals();update()}));
+    r.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{picks[m.key]=+b.dataset.j;store("z4-picks",picks);renderMeals()}));
     box.appendChild(r);
   });
+  const c=MEALS.filter((m,i)=>done[i]).length;
+  document.getElementById("date").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"})+` · ${c} von ${MEALS.length} gegessen`;
 }
 function renderShop(){
   const box=document.getElementById("shop"); box.innerHTML="";
@@ -223,36 +214,32 @@ function renderShop(){
     r.className="row"+(shop[i]?" done":"");
     r.setAttribute("role","checkbox"); r.setAttribute("aria-checked",!!shop[i]); r.tabIndex=0;
     r.innerHTML=`<div class="chk">${CHECK}</div><div class="body"><div class="top"><div class="title">${s.n}</div><div class="price">${s.c}</div></div><div class="detail">${s.d}</div></div>`;
-    const toggle=()=>{shop[i]=!shop[i];store("z-shop",shop);renderShop()};
+    const toggle=()=>{shop[i]=!shop[i];store("z4-shop",shop);renderShop()};
     r.addEventListener("click",toggle);
     r.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()}});
     box.appendChild(r);
   });
 }
-function ring(el,r,frac){const c=2*Math.PI*r;el.style.strokeDasharray=c;el.style.strokeDashoffset=c*(1-Math.min(1,frac))}
-function update(){
-  let k=0,p=0,c=0;
-  MEALS.forEach((m,i)=>{if(done[i]){const v=val(m);k+=v.k;p+=v.p;c++}});
-  const gk=goalK(),gp=goalP();
-  document.getElementById("kNow").textContent=fmt(k);
-  document.getElementById("pNow").textContent=p;
-  document.getElementById("kGoal").textContent=` / ${fmt(gk)} kcal`;
-  document.getElementById("pGoal").textContent=` / ${gp} g`;
-  document.getElementById("count").textContent=`${c} von ${MEALS.length} erledigt`;
-  ring(document.getElementById("ringK"),52,k/gk);
-  ring(document.getElementById("ringP"),36,p/gp);
-  document.getElementById("date").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});
+function renderYazio(){
+  const box=document.getElementById("yazio"); box.innerHTML="";
+  MEALS.flatMap(m=>m.opts?m.opts:[m]).filter(v=>v.z).forEach(v=>{
+    const r=document.createElement("div"); r.className="row plain";
+    r.innerHTML=`<div class="body"><div class="title">${esc(v.yz)}</div><ul class="ingr">${v.z.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    box.appendChild(r);
+  });
+  const fav=document.createElement("div"); fav.className="row plain";
+  fav.innerHTML=`<div class="body"><div class="title">Als Favorit speichern</div><div class="detail">Milchdrink, Pfannkuchen, Banane und Erdnüsse einfach einmal suchen oder scannen und mit dem Herz merken.</div></div>`;
+  box.appendChild(fav);
 }
-document.getElementById("reset").addEventListener("click",()=>{done={};store(DK+today,done);renderMeals();update()});
-document.getElementById("resetShop").addEventListener("click",()=>{shop={};store("z-shop",shop);renderShop()});
+document.getElementById("reset").addEventListener("click",()=>{done={};store(DK+today,done);renderMeals()});
+document.getElementById("resetShop").addEventListener("click",()=>{shop={};store("z4-shop",shop);renderShop()});
 document.querySelectorAll(".tabbar button").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll(".tabbar button").forEach(x=>x.setAttribute("aria-selected",x===b));
   document.querySelectorAll(".view").forEach(v=>v.hidden=v.id!=="v-"+b.dataset.v);
   window.scrollTo(0,0);
 }));
-// Neuer Tag, wenn die App über Mitternacht offen bleibt
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dayKey()!==today){today=dayKey();done=load(DK+today,{});renderMeals();update()}});
-renderMeals();renderShop();update();
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dayKey()!==today){today=dayKey();done=load(DK+today,{});renderMeals()}});
+renderMeals();renderShop();renderYazio();
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 </script>
 </body>
