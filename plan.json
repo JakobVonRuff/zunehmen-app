@@ -3,7 +3,7 @@
   "app": "https://jakobvonruff.github.io/zunehmen-app/",
   "meals": [
     { "t": "06:30", "n": "Frühstück", "d": "Choco Bobbels mit Milch oder 2 Brötchen mit Bionella", "k": 495 },
-    { "t": "09:30", "n": "Milchdrink", "d": "In der großen Pause", "k": 270 },
+    { "t": "09:30", "n": "Milchdrink Banane", "d": "500 ml Milbona, in der großen Pause", "k": 380 },
     { "t": "13:45", "n": "Nudeln mit Käse", "d": "Mit Butter vermischt, Ketchup drauf, 40 g Käse", "k": 745 },
     { "t": "14:45", "n": "Pfannkuchen", "d": "Vom Papa, 45 min vor dem Training", "k": 280 },
     { "t": "15:30", "n": "Training", "d": "1 Banane, viel Wasser", "k": 105 },

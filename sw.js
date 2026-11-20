@@ -1,5 +1,5 @@
 // Offline-Modus: speichert die App beim ersten Öffnen. Bei Änderungen VERSION erhöhen.
-const VERSION = "zunehmen-v6";
+const VERSION = "zunehmen-v7";
 const FILES = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-512.png", "plan.json", "widget.js"];
 
 self.addEventListener("install", e => {
