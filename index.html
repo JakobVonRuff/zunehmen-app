@@ -107,7 +107,7 @@ button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-of
     </svg>
     <div class="stats">
       <div class="stat k"><small>Kalorien</small><b id="kNow">0</b><span id="kGoal"> / 3.400 kcal</span></div>
-      <div class="stat p"><small>Protein</small><b id="pNow">0</b><span id="pGoal"> / 142 g</span></div>
+      <div class="stat p"><small>Protein</small><b id="pNow">0</b><span id="pGoal"> / 121 g</span></div>
       <div class="count" id="count">0 von 8 erledigt</div>
     </div>
   </div>
@@ -120,15 +120,14 @@ button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-of
 <section class="view" id="v-einkauf" hidden>
   <div class="nav"><button type="button" id="resetShop">Alle abwählen</button></div>
   <h1>Einkauf</h1>
-  <p class="date">Lidl oder Netto · ca. 8–10 € pro Woche</p>
+  <p class="date">Lidl oder Netto · ca. 4–5 € pro Woche</p>
   <div class="sechead">Für 1 Woche</div>
   <div class="group" id="shop"></div>
-  <p class="secfoot">Preise ungefähr. Milchdrinks für die Schule nimmst du von zu Hause. Selbst gekauft kosten sie etwa 0,70–1 € pro Stück.</p>
+  <p class="secfoot">Preise ungefähr. Milchdrinks, Brötchen und Wiener nimmst du von zu Hause. Milchdrinks kosten selbst gekauft etwa 0,70–1 € pro Stück.</p>
 
-  <div class="sechead">Abends 2 Minuten vorbereiten</div>
+  <div class="sechead">Abends 1 Minute vorbereiten</div>
   <div class="group">
     <div class="row plain"><div class="body"><div class="title">Milchdrink in den Kühlschrank</div></div></div>
-    <div class="row plain"><div class="body"><div class="title">50 g Erdnüsse in eine Dose</div></div></div>
     <div class="row plain"><div class="body"><div class="title">Banane in die Sporttasche</div></div></div>
   </div>
 </section>
@@ -140,12 +139,12 @@ button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-of
   <div class="sechead">Jede Woche</div>
   <div class="group">
     <div class="row plain rule"><div class="body"><div class="title"><b>Montags wiegen</b></div><div class="detail">Morgens nach dem Klo, vor dem Essen. Den Wert Claude sagen.</div></div></div>
-    <div class="row plain rule"><div class="body"><div class="title"><b>Nach 2 Wochen prüfen</b></div><div class="detail">Weniger als +0,2 kg pro Woche: 1 Glas Milch oder 1 Brötchen mit Bionella mehr. Mehr als +0,6 kg pro Woche über 3 Wochen: Erdnüsse halbieren.</div></div></div>
+    <div class="row plain rule"><div class="body"><div class="title"><b>Nach 2 Wochen prüfen</b></div><div class="detail">Weniger als +0,2 kg pro Woche: 1 Glas Milch oder 1 Brötchen mit Bionella mehr. Mehr als +0,6 kg pro Woche über 3 Wochen: Joghurt-Snack weglassen.</div></div></div>
   </div>
   <div class="sechead">Immer</div>
   <div class="group">
     <div class="row plain rule"><div class="body"><div class="title"><b>Keine Supplements</b></div><div class="detail">Kein Kreatin, kein Mass Gainer, keine Booster. Mit dem Plan brauchst du sie nicht.</div></div></div>
-    <div class="row plain rule"><div class="body"><div class="title"><b>Wiener höchstens 2 am Tag</b></div><div class="detail">Schnitzel und Quark sind die besseren Eiweißquellen.</div></div></div>
+    <div class="row plain rule"><div class="body"><div class="title"><b>Wiener höchstens 2 am Tag</b></div><div class="detail">Darum gibt es sie nur nach dem Training. Mittags lieber Käse oder Schnitzel.</div></div></div>
     <div class="row plain rule"><div class="body"><div class="title"><b>8–10 Stunden Schlaf</b></div><div class="detail">Die Muskeln wachsen nachts.</div></div></div>
     <div class="row plain rule"><div class="body"><div class="title"><b>Im Gym langsam steigern</b></div><div class="detail">Mehr Gewicht oder mehr Wiederholungen. Keine Maximalversuche.</div></div></div>
     <div class="row plain rule"><div class="body"><div class="title"><b>Zum Arzt, mit deinen Eltern</b></div><div class="detail">Wenn du nach 4 Wochen trotz Plan nicht zunimmst, oft müde oder schwindelig bist oder Essen sich nach Stress anfühlt.</div></div></div>
@@ -170,18 +169,16 @@ const MEALS=[
      {l:"Müsli",d:"80 g Choco Bobbels mit 300 ml Milch",k:490,p:17},
      {l:"Brötchen",d:"2 Brötchen mit Bionella und 1 Glas Milch (250 ml)",k:660,p:20}]},
   {t:"09:30",n:"Milchdrink",d:"1 Milchdrink (400–500 ml). Morgens kalt aus dem Kühlschrank einpacken.",k:260,p:13},
-  {t:"11:30",n:"Erdnüsse",d:"50 g geröstete Erdnüsse aus der Dose",k:300,p:13},
-  {t:"13:45",n:"Mittag: Nudeln",d:"125 g Nudeln (roh) mit 1 EL Butter und Ketchup. Dazu Schnitzel, wenn es eins gibt, sonst 2 Wiener.",k:875,p:28},
+  {t:"13:45",n:"Mittag: Nudeln mit Käse",d:"125 g Nudeln (roh) mit 1 EL Butter, Ketchup und 40 g Reibekäse. Gibt es Schnitzel, nimm das statt Käse.",k:755,p:26},
   {t:"14:45",n:"Pfannkuchen vom Papa",d:"45 Minuten vor dem Training, perfekter Zeitpunkt",k:280,p:8},
   {t:"15:30",n:"Training",d:"1 Banane statt Laugenbrezel. 0,5–1 l Wasser trinken.",k:100,p:1,gym:true},
-  {t:"17:15",n:"Schoko-Quark",d:"250 g Magerquark, 150 g Joghurt und 30 g Choco Bobbels verrührt",k:380,p:38},
-  {t:"19:00",n:"Abend: Nudeln mit Käse",d:"125 g Nudeln (roh) mit 1 EL Butter, Ketchup und 30 g Reibekäse",k:715,p:24}
+  {t:"17:15",n:"Brötchen mit Wiener",d:"2 Brötchen mit je 1 Wiener",k:550,p:23},
+  {t:"19:00",n:"Abend: Nudeln mit Käse",d:"125 g Nudeln (roh) mit 1 EL Butter, Ketchup und 30 g Reibekäse",k:715,p:24},
+  {t:"21:00",n:"Joghurt-Snack",d:"150 g Joghurt mit 40 g Choco Bobbels",k:250,p:9}
 ];
 const SHOP=[
-  {n:"Erdnüsse geröstet",d:"2 × 200 g · für die 2. Pause",c:"2,50 €"},
-  {n:"Magerquark",d:"3–4 × 500 g · nach dem Training",c:"3–4 €"},
   {n:"Bananen",d:"1 kg · beim Training",c:"1,50 €"},
-  {n:"Reibekäse (Gouda)",d:"200 g · für die Abend-Nudeln",c:"1,50 €"}
+  {n:"Reibekäse (Gouda)",d:"2 × 250 g · für Mittag- und Abend-Nudeln",c:"3 €"}
 ];
 const CHECK='<svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4.5"/></svg>';
 const fmt=n=>n.toLocaleString("de-DE");
@@ -190,7 +187,8 @@ function load(k,f){try{const v=JSON.parse(localStorage.getItem(k));return v??f}c
 function store(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 
 let today=dayKey();
-let done=load("z-done-"+today,{});
+const DK="z3-done-";
+let done=load(DK+today,{});
 let pick=load("z-breakfast",0);
 let shop=load("z-shop",{});
 
@@ -211,7 +209,7 @@ function renderMeals(){
       <div class="detail">${v.d} · ${v.p} g Protein</div>
       ${m.opts?`<div class="seg" role="group" aria-label="Frühstück wählen">${m.opts.map((o,j)=>`<button type="button" data-j="${j}" aria-pressed="${j===pick}">${o.l}</button>`).join("")}</div>`:""}
     </div>`;
-    const toggle=()=>{done[i]=!done[i];store("z-done-"+today,done);renderMeals();update()};
+    const toggle=()=>{done[i]=!done[i];store(DK+today,done);renderMeals();update()};
     r.addEventListener("click",e=>{if(e.target.closest(".seg"))return;toggle()});
     r.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();toggle()}});
     r.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{pick=+b.dataset.j;store("z-breakfast",pick);renderMeals();update()}));
@@ -245,7 +243,7 @@ function update(){
   ring(document.getElementById("ringP"),36,p/gp);
   document.getElementById("date").textContent=new Date().toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});
 }
-document.getElementById("reset").addEventListener("click",()=>{done={};store("z-done-"+today,done);renderMeals();update()});
+document.getElementById("reset").addEventListener("click",()=>{done={};store(DK+today,done);renderMeals();update()});
 document.getElementById("resetShop").addEventListener("click",()=>{shop={};store("z-shop",shop);renderShop()});
 document.querySelectorAll(".tabbar button").forEach(b=>b.addEventListener("click",()=>{
   document.querySelectorAll(".tabbar button").forEach(x=>x.setAttribute("aria-selected",x===b));
@@ -253,7 +251,7 @@ document.querySelectorAll(".tabbar button").forEach(b=>b.addEventListener("click
   window.scrollTo(0,0);
 }));
 // Neuer Tag, wenn die App über Mitternacht offen bleibt
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dayKey()!==today){today=dayKey();done=load("z-done-"+today,{});renderMeals();update()}});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden&&dayKey()!==today){today=dayKey();done=load(DK+today,{});renderMeals();update()}});
 renderMeals();renderShop();update();
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 </script>
